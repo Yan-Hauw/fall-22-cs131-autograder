@@ -1,0 +1,2964 @@
+Running 10 tests...
+Running testsv1/test1.src... indentations: [0, 1, 1, 0]
+on line: 1
+['assign', 'v1', '20']
+on line: 2
+['funccall', 'print', 'v1']
+on line: 3
+['endfunc']
+{'v1': (20, 1)}
+ PASSED
+Running testsv1/test2.src... indentations: [0, 2, 2, 0]
+on line: 1
+['funccall', 'input', '"Enter a name: "']
+on line: 2
+['funccall', 'print', '"Hello, "', 'result']
+on line: 3
+['endfunc']
+{'result': ('Carey', 2)}
+ PASSED
+Running testsv1/test6.src... indentations: [0, 2, 2, 4, 4, 4, 6, 6, 4, 4, 4, 2, 0]
+on line: 1
+['assign', 'i', '0']
+on line: 2
+['while', '<', 'i', '2']
+on line: 3
+['funccall', 'print', '"Outer: "', 'i']
+on line: 4
+['assign', 'j', '3']
+on line: 5
+['while', '>', 'j', '0']
+on line: 6
+['funccall', 'print', '"Inner: "', 'j']
+on line: 7
+['assign', 'j', '-', 'j', '1']
+on line: 8
+['endwhile']
+6 4
+6 4
+4 4
+on line: 5
+['while', '>', 'j', '0']
+on line: 6
+['funccall', 'print', '"Inner: "', 'j']
+on line: 7
+['assign', 'j', '-', 'j', '1']
+on line: 8
+['endwhile']
+6 4
+6 4
+4 4
+on line: 5
+['while', '>', 'j', '0']
+on line: 6
+['funccall', 'print', '"Inner: "', 'j']
+on line: 7
+['assign', 'j', '-', 'j', '1']
+on line: 8
+['endwhile']
+6 4
+6 4
+4 4
+on line: 5
+['while', '>', 'j', '0']
+6 4
+6 4
+4 4
+on line: 9
+['funccall', 'print', '"Outer end: "', 'i']
+on line: 10
+['assign', 'i', '+', 'i', '1']
+on line: 11
+['endwhile']
+4 2
+4 2
+4 2
+6 2
+6 2
+4 2
+4 2
+4 2
+2 2
+on line: 2
+['while', '<', 'i', '2']
+on line: 3
+['funccall', 'print', '"Outer: "', 'i']
+on line: 4
+['assign', 'j', '3']
+on line: 5
+['while', '>', 'j', '0']
+on line: 6
+['funccall', 'print', '"Inner: "', 'j']
+on line: 7
+['assign', 'j', '-', 'j', '1']
+on line: 8
+['endwhile']
+6 4
+6 4
+4 4
+on line: 5
+['while', '>', 'j', '0']
+on line: 6
+['funccall', 'print', '"Inner: "', 'j']
+on line: 7
+['assign', 'j', '-', 'j', '1']
+on line: 8
+['endwhile']
+6 4
+6 4
+4 4
+on line: 5
+['while', '>', 'j', '0']
+on line: 6
+['funccall', 'print', '"Inner: "', 'j']
+on line: 7
+['assign', 'j', '-', 'j', '1']
+on line: 8
+['endwhile']
+6 4
+6 4
+4 4
+on line: 5
+['while', '>', 'j', '0']
+6 4
+6 4
+4 4
+on line: 9
+['funccall', 'print', '"Outer end: "', 'i']
+on line: 10
+['assign', 'i', '+', 'i', '1']
+on line: 11
+['endwhile']
+4 2
+4 2
+4 2
+6 2
+6 2
+4 2
+4 2
+4 2
+2 2
+on line: 2
+['while', '<', 'i', '2']
+4 2
+4 2
+4 2
+6 2
+6 2
+4 2
+4 2
+4 2
+2 2
+on line: 12
+['endfunc']
+{'i': (2, 1), 'j': (0, 1)}
+ PASSED
+Running testsv1/test8.src... indentations: [0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0]
+on line: 2
+['assign', 'b', '3']
+on line: 3
+['assign', 'a', '+', '1', 'b']
+on line: 4
+['funccall', 'print', 'a']
+on line: 5
+['assign', 'a', '*', '2', 'b']
+on line: 6
+['funccall', 'print', 'a']
+on line: 7
+['assign', 'a', '-', '2', 'b']
+on line: 8
+['funccall', 'print', 'a']
+on line: 9
+['assign', 'a', '/', '20', 'b']
+on line: 10
+['funccall', 'print', 'a']
+on line: 11
+['assign', 'a', '%', '20', 'b']
+on line: 12
+['funccall', 'print', 'a']
+on line: 13
+['assign', 'a', '>', 'b', '0']
+on line: 14
+['funccall', 'print', 'a']
+on line: 15
+['assign', 'a', '>', '0', 'b']
+on line: 16
+['funccall', 'print', 'a']
+on line: 17
+['assign', 'a', '>=', 'b', '0']
+on line: 18
+['funccall', 'print', 'a']
+on line: 19
+['assign', 'a', '>=', '0', 'b']
+on line: 20
+['funccall', 'print', 'a']
+on line: 21
+['assign', 'a', '>=', 'b', 'b']
+on line: 22
+['funccall', 'print', 'a']
+on line: 23
+['assign', 'a', '<=', 'b', 'b']
+on line: 24
+['funccall', 'print', 'a']
+on line: 25
+['assign', 'a', '&', 'True', 'True']
+on line: 26
+['funccall', 'print', 'a']
+on line: 27
+['assign', 'a', '&', 'False', 'True']
+on line: 28
+['funccall', 'print', 'a']
+on line: 29
+['assign', 'a', '|', 'True', 'True']
+on line: 30
+['funccall', 'print', 'a']
+on line: 31
+['assign', 'a', '|', 'False', 'True']
+on line: 32
+['funccall', 'print', 'a']
+on line: 33
+['assign', 'a', '|', 'False', 'False']
+on line: 34
+['funccall', 'print', 'a']
+on line: 35
+['endfunc']
+{'b': (3, 1), 'a': (False, 3)}
+ PASSED
+Running testsv1/test10.src... indentations: [0, 2, 2, 2, 2, 0, 0, 0, 2, 4, 2, 2, 2, 2, 2, 0]
+on line: 1
+['assign', 'n', '5']
+on line: 2
+['assign', 'f', '1']
+on line: 3
+['funccall', 'fact']
+funccall fact at 8
+on line: 8
+['if', '==', 'n', '0']
+4 2
+2 2
+on line: 11
+['assign', 'f', '*', 'f', 'n']
+on line: 12
+['assign', 'n', '-', 'n', '1']
+on line: 13
+['funccall', 'fact']
+funccall fact at 8
+on line: 8
+['if', '==', 'n', '0']
+4 2
+2 2
+on line: 11
+['assign', 'f', '*', 'f', 'n']
+on line: 12
+['assign', 'n', '-', 'n', '1']
+on line: 13
+['funccall', 'fact']
+funccall fact at 8
+on line: 8
+['if', '==', 'n', '0']
+4 2
+2 2
+on line: 11
+['assign', 'f', '*', 'f', 'n']
+on line: 12
+['assign', 'n', '-', 'n', '1']
+on line: 13
+['funccall', 'fact']
+funccall fact at 8
+on line: 8
+['if', '==', 'n', '0']
+4 2
+2 2
+on line: 11
+['assign', 'f', '*', 'f', 'n']
+on line: 12
+['assign', 'n', '-', 'n', '1']
+on line: 13
+['funccall', 'fact']
+funccall fact at 8
+on line: 8
+['if', '==', 'n', '0']
+4 2
+2 2
+on line: 11
+['assign', 'f', '*', 'f', 'n']
+on line: 12
+['assign', 'n', '-', 'n', '1']
+on line: 13
+['funccall', 'fact']
+funccall fact at 8
+on line: 8
+['if', '==', 'n', '0']
+on line: 9
+['return', 'f']
+on line: 14
+['return', 'result']
+on line: 14
+['return', 'result']
+on line: 14
+['return', 'result']
+on line: 14
+['return', 'result']
+on line: 14
+['return', 'result']
+on line: 4
+['funccall', 'print', 'result']
+on line: 5
+['endfunc']
+{'n': (0, 1), 'f': (120, 1), 'result': (120, 1)}
+ PASSED
+Running testsv1/test27.src... indentations: [-1, 0, 0, 4, 8, 4, 4, 4, 4, 0, 0, 0, 4, 8, 4, 4, 4, 4, 0, 0, 0, 4, 4, 8, 4, 8, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0]
+on line: 30
+['assign', 'n', '15']
+on line: 31
+['funccall', 'isEven']
+funccall isEven at 21
+on line: 21
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+on line: 13
+['return', 'False']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 22
+['if', '==', 'result', 'True']
+8 4
+4 4
+8 4
+4 4
+on line: 25
+['funccall', 'print', '"number is odd"']
+on line: 26
+['endif']
+on line: 27
+['endfunc']
+on line: 32
+['assign', 'n', '20']
+on line: 33
+['funccall', 'isEven']
+funccall isEven at 21
+on line: 21
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+on line: 4
+['return', 'True']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 22
+['if', '==', 'result', 'True']
+on line: 23
+['funccall', 'print', '"number is even"']
+on line: 24
+['else']
+8 4
+4 4
+on line: 27
+['endfunc']
+on line: 34
+['assign', 'n', '0']
+on line: 35
+['funccall', 'isEven']
+funccall isEven at 21
+on line: 21
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+on line: 4
+['return', 'True']
+on line: 22
+['if', '==', 'result', 'True']
+on line: 23
+['funccall', 'print', '"number is even"']
+on line: 24
+['else']
+8 4
+4 4
+on line: 27
+['endfunc']
+on line: 36
+['assign', 'n', '148']
+on line: 37
+['funccall', 'isEven']
+funccall isEven at 21
+on line: 21
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 6
+['assign', 'n', '-', 'n', '1']
+on line: 7
+['funccall', 'odd']
+funccall odd at 12
+on line: 12
+['if', '==', 'n', '0']
+8 4
+4 4
+8 4
+4 4
+on line: 15
+['assign', 'n', '-', 'n', '1']
+on line: 16
+['funccall', 'even']
+funccall even at 3
+on line: 3
+['if', '==', 'n', '0']
+on line: 4
+['return', 'True']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 17
+['return', 'result']
+on line: 8
+['return', 'result']
+on line: 22
+['if', '==', 'result', 'True']
+on line: 23
+['funccall', 'print', '"number is even"']
+on line: 24
+['else']
+8 4
+4 4
+on line: 27
+['endfunc']
+on line: 38
+['endfunc']
+{'n': (0, 1), 'result': (True, 3)}
+ PASSED
+Running testsv1/test28.src... indentations: [-1, 0, 0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0, 0, 0, 0, 4, 8, 4, 4, 4, 4, 0]
+on line: 3
+['assign', 'n', '4']
+on line: 4
+['assign', 'result', '"a"']
+on line: 5
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+on line: 17
+['return']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 6
+['funccall', 'print', 'result']
+on line: 7
+[]
+on line: 8
+['assign', 'n', '6']
+on line: 9
+['assign', 'result', '"##"']
+on line: 10
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+8 4
+4 4
+on line: 19
+['assign', 'n', '-', 'n', '1']
+on line: 20
+['assign', 'result', '+', 'result', 'result']
+on line: 21
+['funccall', 'double']
+funccall double at 16
+on line: 16
+['if', '==', 'n', '0']
+on line: 17
+['return']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 22
+['endfunc']
+on line: 11
+['funccall', 'print', 'result']
+on line: 12
+[]
+on line: 13
+['endfunc']
+{'n': (0, 1), 'result': ('################################################################################################################################', 2)}
+ PASSED
+Running failsv1/test1.src... indentations: [0, 1, 1, 0]
+on line: 1
+['assign', 'v1', '+', '20', 'True']
+ PASSED
+Running failsv1/test9.src... indentations: [-1, 0, 4, 0]
+on line: 2
+['assign', 'v1', 'result']
+ PASSED
+Running failsv1/test7.src... indentations: [0, 1, 1, 0]
+on line: 1
+['assign', 'v1', '20']
+on line: 2
+['assign', 'v2', 'V1']
+ PASSED
+10/10 tests passed.
+Total Score:    100.00%
