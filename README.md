@@ -8,14 +8,15 @@ This repository contains:
 
 - the **full source code** for the autograder we deploy to Gradescope
 - 20% of the test cases we evaluate your code on; these are the test cases that are public on Gradescope
-    - `testsv1` contains source (`.src`), expected (`.exp`), and standard input (`.in`) files for programs that should interpret and run without errors
-    - `failsv1` contains source (`.src`), expected (`.exp`), and standard input (`.in`) files for programs that should interpret successfully, but error
+    - `testsv*` contains source (`.src`), expected (`.exp`), and standard input (`.in`) files for programs that should interpret and run without errors
+    - `failsv*` contains source (`.src`), expected (`.exp`), and standard input (`.in`) files for programs that should interpret successfully, but error
 
 This repository does not contain:
 
 - 80% of the test cases we evaluate your code on
 - the plagiarism checker, which is closed-source
 - the Docker configuration for the deployment; this is managed by Gradescope
+- canonical solutions for the past projects - those are in the [project template repo](https://github.com/UCLA-CS-131/fall-22-proj-starter)
 
 We'll note that with the current setup, we grant **five seconds for each test case to run**.
 
@@ -37,7 +38,7 @@ Your next steps depend on what you're trying to do.
 
 ### Testing Locally
 
-To test locally, you will additionally need a **working implementation** of the project; the minimum example is an `interpreterv1.py` that implements the `Interpreter` class.
+To test locally, you will additionally need a **working implementation** of the project; the minimum example is an `interpreterv1.py`/`interpreterv2.py` that implements the `Interpreter` class.
 
 Place this in the same directory as `tester.py`. Then, to test project 1,
 
@@ -58,20 +59,48 @@ Running failsv1/test7.src...  PASSED
 Total Score:    100.00%
 ```
 
-Similarly, one can test versions 2 and 3 with
+Similarly, one can test version 2, which requires a `interpreterv2.py`, with:
 
 ```sh
 $ python3 tester.py 2
-...
-$ python3 tester.py 3
+Running 25 tests...
+Running testsv2/test2.src...  PASSED
+Running testsv2/test3.src...  PASSED
+Running testsv2/test6.src...  PASSED
+Running testsv2/test7.src...  PASSED
+Running testsv2/test8.src...  PASSED
+Running testsv2/test10.src...  PASSED
+Running testsv2/test11.src...  PASSED
+Running testsv2/test12.src...  PASSED
+Running testsv2/test13.src...  PASSED
+Running testsv2/test47.src...  PASSED
+Running testsv2/test16.src...  PASSED
+Running testsv2/test50.src...  PASSED
+Running testsv2/test53.src...  PASSED
+Running testsv2/test22.src...  PASSED
+Running testsv2/test55.src...  PASSED
+Running failsv2/test3.src...  PASSED
+Running failsv2/test4.src...  PASSED
+Running failsv2/test8.src...  PASSED
+Running failsv2/test9.src...  PASSED
+Running failsv2/test10.src...  PASSED
+Running failsv2/test20.src...  PASSED
+Running failsv2/test21.src...  PASSED
+Running failsv2/test23.src...  PASSED
+Running failsv2/test24.src...  PASSED
+Running failsv2/test27.src...  PASSED
+25/25 tests passed.
+Total Score:    100.00%
 ...
 ```
+
+And version `3` with `python3 tester.py 3`.
 
 The output of this command is **identical to what is visible on Gradescope pre-due date**, and they are the same cases that display on every submission. If there is a discrepancy, please let the teaching team know!
 
 Note: we also output the results of the terminal output to `results.json`.
 
-### Deploying on Gradescope
+### Deploying on Gradescope (as an instructor)
 
 *Note: as an instructor, you'll want to add more test cases!*
 

@@ -4,6 +4,8 @@ import json
 from abc import ABC, abstractmethod
 import threading
 import _thread as thread
+import multiprocessing.pool
+import functools
 
 # Test harness; this file is platform agnostic
 
@@ -110,3 +112,21 @@ def exit_after(s):
 def quit_function(fn_name):
   print('{0} took too long'.format(fn_name), end = '')
   thread.interrupt_main() # raises KeyboardInterrupt
+
+# A more aggressive timeout function that can deal with code that accidentally
+# hampers with threading.Timer() or interrupts; but, it doesn't pause execution
+# This **should not be used for grading with side effects**.
+# see: https://stackoverflow.com/a/31667005
+def timeout(max_timeout):
+    """Timeout decorator, parameter in seconds."""
+    def timeout_decorator(item):
+        """Wrap the original function."""
+        @functools.wraps(item)
+        def func_wrapper(*args, **kwargs):
+            """Closure for function."""
+            pool = multiprocessing.pool.ThreadPool(processes=1)
+            async_result = pool.apply_async(item, args, kwargs)
+            # raises a TimeoutError if execution exceeds max_timeout
+            return async_result.get(max_timeout)
+        return func_wrapper
+    return timeout_decorator

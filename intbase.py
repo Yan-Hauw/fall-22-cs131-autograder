@@ -11,6 +11,7 @@ class ErrorType(Enum):
 class InterpreterBase:
 
   # constants
+  MAIN_FUNC = 'main'
   FUNC_DEF = 'func'
   ENDFUNC_DEF = 'endfunc'
   WHILE_DEF = 'while'
