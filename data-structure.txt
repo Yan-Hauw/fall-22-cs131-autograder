@@ -1,0 +1,48 @@
+
+[(identifier for function scope, [{identifier for first/function scope: [variables], identifier for next scope: [variables]}, {}]), (identifier for function scope, [])]
+
+
+
+
+[[{identifier for first/function scope: [variables], identifier for next scope: [variables]}, {}], , ]
+
+
+
+[ #list of all function call
+    [ #scopes within each function call, this is the scope stack
+        { #variables and values within each scope, first scope: need to do special stuff here, we know this is the top level because its the first dictionary in the list
+            name: (value, type, wasdefinedhereorno, ) # wasdefinedhere includes defined in parameters
+
+        },
+        { #variables and values within each scope, second scope
+
+
+        },
+
+
+        [
+        # at the end of this list of dictionaries, we append a list [(arg1, const)]
+        # arg can be just the value or also an object, doesn't matter 
+
+
+
+
+
+        ]
+    ],
+    [
+
+    ]
+
+
+
+
+]
+
+
+
+
+
+
+
+
