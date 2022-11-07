@@ -40,8 +40,26 @@ class ScopeStack:
     def get_current_scope(self):
         return self.scope_stack[-1] if self.scope_stack else {}
 
-    def create_new_scope(self, scope):
+    def create_new_inner_scope(self, scope):
         self.scope_stack.append(scope)
+        return
+
+    # def leave_inner_scope(self):
+    #     self.scope_stack.pop()
+    #     return
+
+
+class FunctionStack:
+    def __init__(self):
+        self.function_stack = []
+        self.function_stack.append(ScopeStack())
+        return
+
+    def get_current_function(self):
+        return self.function_stack[-1]
+
+    def append_new_scope_stack(self):
+        self.function_stack.append(ScopeStack())
         return
 
 
@@ -61,7 +79,6 @@ class Interpreter(InterpreterBase):
         self.ip = self._find_first_instruction(InterpreterBase.MAIN_FUNC)
         self.return_stack = []
         self.function_stack = []
-        self.function_stack.append(ScopeStack())
         self.terminate = False
         self.env_manager = EnvironmentManager()  # used to track variables/scope
 
@@ -131,7 +148,7 @@ class Interpreter(InterpreterBase):
             self.ip = self._find_first_instruction(args[0])
 
             # still need to append the arguments list to the end of previous stack
-            self.function_stack.append(ScopeStack())
+            self.function_stack.append_new_scope_stack()
 
     def _endfunc(self):
         if not self.return_stack:  # done with main!
@@ -410,8 +427,8 @@ class Interpreter(InterpreterBase):
 
     def enter_new_scope(self):
         # copy variables from previous scope
-        current_scope = self.function_stack[-1].get_current_scope()
+        current_scope = self.function_stack.get_current_function().get_current_scope()
         # print(current_scope)
         new_scope = copy.deepcopy(current_scope)
-        self.function_stack[-1].create_new_scope(new_scope)
+        self.function_stack.get_current_function().create_new_inner_scope(new_scope)
         return
