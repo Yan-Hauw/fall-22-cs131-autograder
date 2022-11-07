@@ -26,3 +26,6 @@ class EnvironmentManager:
             value.defined_in_this_scope = False
             new_scope.set(name, value)
         return new_scope
+
+    def create_output_dict(self):
+        return self.environment

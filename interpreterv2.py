@@ -33,10 +33,14 @@ class Value:
         self.defined_in_this_scope = defined_here
         return
 
+    def create_output_tuple(self):
+        return (self.t, self.defined_in_this_scope, self.v)
+
 
 class ScopeStack:
     def __init__(self):
         self.scope_stack = []
+        self.scope_stack.append(EnvironmentManager())
         return
 
     def get_top_level_scope(self):
@@ -55,6 +59,9 @@ class ScopeStack:
         self.scope_stack.pop()
         return
 
+    def create_output_list(self):
+        return self.scope_stack
+
 
 class FunctionStack:
     def __init__(self):
@@ -68,6 +75,21 @@ class FunctionStack:
     def append_new_scope_stack(self):
         self.function_stack.append(ScopeStack())
         return
+
+    def produce_output_object(self):
+        out = []
+        for scope_stack in self.function_stack:
+            inner_list = []
+            for scope in scope_stack.create_output_list():
+                scope_dict = {
+                    name: var.create_output_tuple()
+                    for name, var in scope.create_output_dict().items()
+                }
+                inner_list.append(scope_dict)
+
+            out.append(inner_list)
+
+        return out
 
 
 # Main interpreter class
@@ -91,6 +113,7 @@ class Interpreter(InterpreterBase):
         # main interpreter run loop
         while not self.terminate:
             print(self.ip)
+            print(self.function_stack.produce_output_object())
             self._process_line()
 
     def _process_line(self):
@@ -135,6 +158,7 @@ class Interpreter(InterpreterBase):
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
         for varname in args[1 : len(args)]:
+
             value_obj = current_scope.get(varname)
 
             # if variable already defined in this scope
@@ -153,7 +177,7 @@ class Interpreter(InterpreterBase):
                 new_value_object = self.create_default_object(type)
                 self._set_value(varname, new_value_object)
 
-        return
+        self._advance_to_next_statement()
 
     def _assign(self, tokens):
         if len(tokens) < 2:
