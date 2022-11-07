@@ -136,7 +136,6 @@ class Interpreter(InterpreterBase):
             case InterpreterBase.ENDFUNC_DEF:
                 self._endfunc()
             case InterpreterBase.IF_DEF:
-                print("here")
                 self._if(args)
             case InterpreterBase.ELSE_DEF:
                 self._else()
