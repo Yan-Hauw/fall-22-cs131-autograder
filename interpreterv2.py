@@ -239,7 +239,7 @@ class Interpreter(InterpreterBase):
 
     def _endif(self):
         self._advance_to_next_statement()
-        # self.leave_scope()
+        self.leave_scope()
 
     def _else(self):
         for line_num in range(self.ip + 1, len(self.tokenized_program)):
@@ -251,7 +251,7 @@ class Interpreter(InterpreterBase):
                 and self.indents[self.ip] == self.indents[line_num]
             ):
                 self.ip = line_num + 1
-                # self.leave_scope()
+                self.leave_scope()
                 return
         super().error(ErrorType.SYNTAX_ERROR, "Missing endif", self.ip)  # no
 
@@ -311,7 +311,7 @@ class Interpreter(InterpreterBase):
                 and self.indents[cur_line] == while_indent
             ):
                 self.ip = cur_line
-                # self.leave_scope()
+                self.leave_scope()
                 return
             if (
                 self.tokenized_program[cur_line]
@@ -507,10 +507,10 @@ class Interpreter(InterpreterBase):
         self.function_stack.get_current_function().create_new_inner_scope(new_scope)
         return
 
-    # def leave_scope(self):
-    #     current_function = self.function_stack.get_current_function()
-    #     current_function.leave_inner_scope()
-    #     return
+    def leave_scope(self):
+        current_function = self.function_stack.get_current_function()
+        current_function.leave_inner_scope()
+        return
 
     def create_default_object(self, type):
         if type == "int":
