@@ -78,7 +78,7 @@ class Interpreter(InterpreterBase):
         self.func_manager = FunctionManager(self.tokenized_program)
         self.ip = self._find_first_instruction(InterpreterBase.MAIN_FUNC)
         self.return_stack = []
-        self.function_stack = []
+        self.function_stack = FunctionStack()
         self.terminate = False
         self.env_manager = EnvironmentManager()  # used to track variables/scope
 
