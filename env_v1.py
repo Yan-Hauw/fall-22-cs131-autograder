@@ -16,3 +16,13 @@ class EnvironmentManager:
     # Sets the data associated with a variable name
     def set(self, symbol, value):
         self.environment[symbol] = value
+
+    def has_defined(self, symbol):
+        return symbol in self.environment
+
+    def create_new_scope(self):
+        new_scope = EnvironmentManager()
+        for name, value in self.environment:
+            value.defined_in_this_scope = False
+            new_scope.set(name, value)
+        return new_scope

@@ -14,9 +14,10 @@ class Type(Enum):
 
 # Represents a value, which has a type and its value
 class Value:
-    def __init__(self, type, value=None):
+    def __init__(self, type, defined_here, value=None):
         self.t = type
         self.v = value
+        self.defined_in_this_scope = defined_here
 
     def value(self):
         return self.v
@@ -28,6 +29,10 @@ class Value:
     def type(self):
         return self.t
 
+    def set_defined_here_flag(self, defined_here):
+        self.defined_in_this_scope = defined_here
+        return
+
 
 class ScopeStack:
     def __init__(self):
@@ -38,15 +43,15 @@ class ScopeStack:
         return
 
     def get_current_scope(self):
-        return self.scope_stack[-1] if self.scope_stack else {}
+        return self.scope_stack[-1] if self.scope_stack else EnvironmentManager()
 
     def create_new_inner_scope(self, scope):
-        print("enter")
+        # print("enter")
         self.scope_stack.append(scope)
         return
 
     def leave_inner_scope(self):
-        print("leave")
+        # print("leave")
         self.scope_stack.pop()
         return
 
@@ -82,7 +87,6 @@ class Interpreter(InterpreterBase):
         self.return_stack = []
         self.function_stack = FunctionStack()
         self.terminate = False
-        self.env_manager = EnvironmentManager()  # used to track variables/scope
 
         # main interpreter run loop
         while not self.terminate:
@@ -100,6 +104,8 @@ class Interpreter(InterpreterBase):
         args = tokens[1:]
 
         match tokens[0]:
+            case InterpreterBase.VAR_DEF:
+                self._define(args)
             case InterpreterBase.ASSIGN_DEF:
                 self._assign(args)
             case InterpreterBase.FUNCCALL_DEF:
@@ -124,11 +130,54 @@ class Interpreter(InterpreterBase):
     def _blank_line(self):
         self._advance_to_next_statement()
 
+    def _define(self, args):
+        type = args[0]
+        current_scope = self.function_stack.get_current_function().get_current_scope()
+
+        for varname in args[1 : len(args)]:
+            value_obj = current_scope.get(varname)
+
+            # if variable already defined in this scope
+            if value_obj and value_obj.defined_in_this_scope == True:
+                super().error(
+                    ErrorType.NAME_ERROR,
+                    f"Trying to redefine var in same scope",
+                    self.ip,
+                )  # no
+
+            # if definition of unknown type
+            # not tested
+
+            # else not yet defined or shadowing
+            else:
+                new_value_object = self.create_default_object(type)
+                self._set_value(varname, new_value_object)
+
+        return
+
     def _assign(self, tokens):
         if len(tokens) < 2:
             super().error(ErrorType.SYNTAX_ERROR, "Invalid assignment statement")  # no
         vname = tokens[0]
+
+        current_scope = self.function_stack.get_current_function().get_current_scope()
+
+        if not current_scope.has_defined(vname):
+            super().error(
+                ErrorType.NAME_ERROR,
+                f"Trying to assign undefined variable",
+                self.ip,
+            )  # no
+
         value_type = self._eval_expression(tokens[1:])
+
+        # We just get the result of the operation,
+        # then change the flag value after we get the result
+        initial_value_obj = current_scope.get(vname)
+
+        if initial_value_obj and initial_value_obj.defined_in_this_scope == True:
+            value_type.defined_in_this_scope = True
+
         self._set_value(tokens[0], value_type)
         self._advance_to_next_statement()
 
@@ -190,7 +239,7 @@ class Interpreter(InterpreterBase):
 
     def _endif(self):
         self._advance_to_next_statement()
-        self.leave_scope()
+        # self.leave_scope()
 
     def _else(self):
         for line_num in range(self.ip + 1, len(self.tokenized_program)):
@@ -202,7 +251,7 @@ class Interpreter(InterpreterBase):
                 and self.indents[self.ip] == self.indents[line_num]
             ):
                 self.ip = line_num + 1
-                self.leave_scope()
+                # self.leave_scope()
                 return
         super().error(ErrorType.SYNTAX_ERROR, "Missing endif", self.ip)  # no
 
@@ -262,7 +311,7 @@ class Interpreter(InterpreterBase):
                 and self.indents[cur_line] == while_indent
             ):
                 self.ip = cur_line
-                self.leave_scope()
+                # self.leave_scope()
                 return
             if (
                 self.tokenized_program[cur_line]
@@ -289,7 +338,7 @@ class Interpreter(InterpreterBase):
             self._print(args)
         result = super().get_input()
         self._set_value(
-            InterpreterBase.RESULT_DEF, Value(Type.STRING, result)
+            InterpreterBase.RESULT_DEF, Value(Type.STRING, False, result)
         )  # return always passed back in result
 
     def _strtoint(self, args):
@@ -303,7 +352,7 @@ class Interpreter(InterpreterBase):
                 ErrorType.TYPE_ERROR, "Non-string passed to strtoint", self.ip
             )  #!
         self._set_value(
-            InterpreterBase.RESULT_DEF, Value(Type.INT, int(value_type.value()))
+            InterpreterBase.RESULT_DEF, Value(Type.INT, False, int(value_type.value()))
         )  # return always passed back in result
 
     def _advance_to_next_statement(self):
@@ -329,34 +378,34 @@ class Interpreter(InterpreterBase):
         ]
         self.binary_ops = {}
         self.binary_ops[Type.INT] = {
-            "+": lambda a, b: Value(Type.INT, a.value() + b.value()),
-            "-": lambda a, b: Value(Type.INT, a.value() - b.value()),
-            "*": lambda a, b: Value(Type.INT, a.value() * b.value()),
+            "+": lambda a, b: Value(Type.INT, False, a.value() + b.value()),
+            "-": lambda a, b: Value(Type.INT, False, a.value() - b.value()),
+            "*": lambda a, b: Value(Type.INT, False, a.value() * b.value()),
             "/": lambda a, b: Value(
-                Type.INT, a.value() // b.value()
+                Type.INT, False, a.value() // b.value()
             ),  # // for integer ops
-            "%": lambda a, b: Value(Type.INT, a.value() % b.value()),
-            "==": lambda a, b: Value(Type.BOOL, a.value() == b.value()),
-            "!=": lambda a, b: Value(Type.BOOL, a.value() != b.value()),
-            ">": lambda a, b: Value(Type.BOOL, a.value() > b.value()),
-            "<": lambda a, b: Value(Type.BOOL, a.value() < b.value()),
-            ">=": lambda a, b: Value(Type.BOOL, a.value() >= b.value()),
-            "<=": lambda a, b: Value(Type.BOOL, a.value() <= b.value()),
+            "%": lambda a, b: Value(Type.INT, False, a.value() % b.value()),
+            "==": lambda a, b: Value(Type.BOOL, False, a.value() == b.value()),
+            "!=": lambda a, b: Value(Type.BOOL, False, a.value() != b.value()),
+            ">": lambda a, b: Value(Type.BOOL, False, a.value() > b.value()),
+            "<": lambda a, b: Value(Type.BOOL, False, a.value() < b.value()),
+            ">=": lambda a, b: Value(Type.BOOL, False, a.value() >= b.value()),
+            "<=": lambda a, b: Value(Type.BOOL, False, a.value() <= b.value()),
         }
         self.binary_ops[Type.STRING] = {
-            "+": lambda a, b: Value(Type.STRING, a.value() + b.value()),
-            "==": lambda a, b: Value(Type.BOOL, a.value() == b.value()),
-            "!=": lambda a, b: Value(Type.BOOL, a.value() != b.value()),
-            ">": lambda a, b: Value(Type.BOOL, a.value() > b.value()),
-            "<": lambda a, b: Value(Type.BOOL, a.value() < b.value()),
-            ">=": lambda a, b: Value(Type.BOOL, a.value() >= b.value()),
-            "<=": lambda a, b: Value(Type.BOOL, a.value() <= b.value()),
+            "+": lambda a, b: Value(Type.STRING, False, a.value() + b.value()),
+            "==": lambda a, b: Value(Type.BOOL, False, a.value() == b.value()),
+            "!=": lambda a, b: Value(Type.BOOL, False, a.value() != b.value()),
+            ">": lambda a, b: Value(Type.BOOL, False, a.value() > b.value()),
+            "<": lambda a, b: Value(Type.BOOL, False, a.value() < b.value()),
+            ">=": lambda a, b: Value(Type.BOOL, False, a.value() >= b.value()),
+            "<=": lambda a, b: Value(Type.BOOL, False, a.value() <= b.value()),
         }
         self.binary_ops[Type.BOOL] = {
-            "&": lambda a, b: Value(Type.BOOL, a.value() and b.value()),
-            "==": lambda a, b: Value(Type.BOOL, a.value() == b.value()),
-            "!=": lambda a, b: Value(Type.BOOL, a.value() != b.value()),
-            "|": lambda a, b: Value(Type.BOOL, a.value() or b.value()),
+            "&": lambda a, b: Value(Type.BOOL, False, a.value() and b.value()),
+            "==": lambda a, b: Value(Type.BOOL, False, a.value() == b.value()),
+            "!=": lambda a, b: Value(Type.BOOL, False, a.value() != b.value()),
+            "|": lambda a, b: Value(Type.BOOL, False, a.value() or b.value()),
         }
 
     def _compute_indentation(self, program):
@@ -375,12 +424,20 @@ class Interpreter(InterpreterBase):
         if not token:
             super().error(ErrorType.NAME_ERROR, f"Empty token", self.ip)  # no
         if token[0] == '"':
-            return Value(Type.STRING, token.strip('"'))
+            return Value(Type.STRING, False, token.strip('"'))
         if token.isdigit() or token[0] == "-":
-            return Value(Type.INT, int(token))
+            return Value(Type.INT, False, int(token))
         if token == InterpreterBase.TRUE_DEF or token == InterpreterBase.FALSE_DEF:
-            return Value(Type.BOOL, token == InterpreterBase.TRUE_DEF)
-        value = self.env_manager.get(token)
+            return Value(Type.BOOL, False, token == InterpreterBase.TRUE_DEF)
+
+        value = (
+            self.function_stack.get_current_function().get_current_scope().get(token)
+        )
+        #
+        #
+        #        value = self.env_manager.get(token)
+        #
+        #
         if value == None:
             super().error(
                 ErrorType.NAME_ERROR, f"Unknown variable {token}", self.ip
@@ -389,7 +446,14 @@ class Interpreter(InterpreterBase):
 
     # given a variable name and a Value object, associate the name with the value
     def _set_value(self, varname, value_type):
-        self.env_manager.set(varname, value_type)
+        current_scope = self.function_stack.get_current_function().get_current_scope()
+        current_scope.set(varname, value_type)
+
+    #
+    #
+    #        self.env_manager.set(varname, value_type)
+    #
+    #
 
     # evaluate expressions in prefix notation: + 5 * 6 x
     def _eval_expression(self, tokens):
@@ -412,6 +476,7 @@ class Interpreter(InterpreterBase):
                         f"Operator {token} is not compatible with {v1.type()}",
                         self.ip,
                     )  #!
+
                 stack.append(operations[token](v1, v2))
             elif token == "!":
                 v1 = stack.pop()
@@ -433,13 +498,24 @@ class Interpreter(InterpreterBase):
 
     def enter_new_scope(self):
         # copy variables from previous scope
+        # need to loop through dictionary of scope to set all variable-defined-flags to False
         current_scope = self.function_stack.get_current_function().get_current_scope()
         # print(current_scope)
-        new_scope = copy.deepcopy(current_scope)
+
+        new_scope = current_scope.create_new_scope()
+
         self.function_stack.get_current_function().create_new_inner_scope(new_scope)
         return
 
-    def leave_scope(self):
-        current_function = self.function_stack.get_current_function()
-        current_function.leave_inner_scope()
-        return
+    # def leave_scope(self):
+    #     current_function = self.function_stack.get_current_function()
+    #     current_function.leave_inner_scope()
+    #     return
+
+    def create_default_object(self, type):
+        if type == "int":
+            return Value(Type.INT, True, 0)
+        elif type == "bool":
+            return Value(Type.BOOL, True, False)
+        elif type == "string":
+            return Value(Type.STRING, True, "")
