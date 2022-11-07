@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 from intbase import InterpreterBase, ErrorType
 from env_v1 import EnvironmentManager
@@ -28,6 +29,22 @@ class Value:
         return self.t
 
 
+class ScopeStack:
+    def __init__(self):
+        self.scope_stack = []
+        return
+
+    def get_top_level_scope(self):
+        return
+
+    def get_current_scope(self):
+        return self.scope_stack[-1] if self.scope_stack else {}
+
+    def create_new_scope(self, scope):
+        self.scope_stack.append(scope)
+        return
+
+
 # Main interpreter class
 class Interpreter(InterpreterBase):
     def __init__(self, console_output=True, input=None, trace_output=False):
@@ -43,6 +60,8 @@ class Interpreter(InterpreterBase):
         self.func_manager = FunctionManager(self.tokenized_program)
         self.ip = self._find_first_instruction(InterpreterBase.MAIN_FUNC)
         self.return_stack = []
+        self.function_stack = []
+        self.function_stack.append(ScopeStack())
         self.terminate = False
         self.env_manager = EnvironmentManager()  # used to track variables/scope
 
@@ -111,6 +130,9 @@ class Interpreter(InterpreterBase):
             self.return_stack.append(self.ip + 1)
             self.ip = self._find_first_instruction(args[0])
 
+            # still need to append the arguments list to the end of previous stack
+            self.function_stack.append(ScopeStack())
+
     def _endfunc(self):
         if not self.return_stack:  # done with main!
             self.terminate = True
@@ -127,6 +149,9 @@ class Interpreter(InterpreterBase):
             )  #!
         if value_type.value():
             self._advance_to_next_statement()
+
+            self.enter_new_scope()
+
             return
         else:
             for line_num in range(self.ip + 1, len(self.tokenized_program)):
@@ -138,6 +163,8 @@ class Interpreter(InterpreterBase):
                     or tokens[0] == InterpreterBase.ELSE_DEF
                 ) and self.indents[self.ip] == self.indents[line_num]:
                     self.ip = line_num + 1
+                    if tokens[0] == InterpreterBase.ELSE_DEF:
+                        self.enter_new_scope()
                     return
         super().error(ErrorType.SYNTAX_ERROR, "Missing endif", self.ip)  # no
 
@@ -183,6 +210,7 @@ class Interpreter(InterpreterBase):
 
         # If true, we advance to the next statement
         self._advance_to_next_statement()
+        self.enter_new_scope()
 
     def _exit_while(self):
         while_indent = self.indents[self.ip]
@@ -379,3 +407,11 @@ class Interpreter(InterpreterBase):
             super().error(ErrorType.SYNTAX_ERROR, f"Invalid expression", self.ip)  # no
 
         return stack[0]
+
+    def enter_new_scope(self):
+        # copy variables from previous scope
+        current_scope = self.function_stack[-1].get_current_scope()
+        # print(current_scope)
+        new_scope = copy.deepcopy(current_scope)
+        self.function_stack[-1].create_new_scope(new_scope)
+        return
