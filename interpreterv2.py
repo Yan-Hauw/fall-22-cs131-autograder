@@ -113,8 +113,8 @@ class Interpreter(InterpreterBase):
         # main interpreter run loop
         while not self.terminate:
             print(self.ip)
-            print(self.function_stack.produce_output_object())
             self._process_line()
+            print(self.function_stack.produce_output_object())
 
     def _process_line(self):
         if self.trace_output:

@@ -2,6 +2,10 @@
 # in a brewin program and the value of that variable - the value that's passed in can be
 # anything you like. In our implementation we pass in a Value object which holds a type
 # and a value (e.g., Int, 10).
+
+import copy
+
+
 class EnvironmentManager:
     def __init__(self):
         self.environment = {}
@@ -22,7 +26,10 @@ class EnvironmentManager:
 
     def create_new_scope(self):
         new_scope = EnvironmentManager()
-        for name, value in self.environment:
+
+        environment_copy = copy.deepcopy(self.environment)
+
+        for name, value in environment_copy.items():
             value.defined_in_this_scope = False
             new_scope.set(name, value)
         return new_scope
