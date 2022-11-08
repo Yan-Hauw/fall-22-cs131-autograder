@@ -103,18 +103,22 @@ class FunctionStack:
                 scope_stack_last_output = []
                 scope_stack_last_output.append(scope_stack_last[0])
                 for tup in scope_stack_last[1:]:
-                    scope_stack_last_output.append(
-                        (tup[0].create_output_tuple(), tup[1])
-                    )
+                    if isinstance(tup[0], str):
+                        scope_stack_last_output.append((tup[0], tup[1]))
+                    else:
+                        scope_stack_last_output.append(
+                            (tup[0].create_output_tuple(), tup[1])
+                        )
 
                 inner_list.append(scope_stack_last_output)
 
             else:
                 for scope in scope_stack.create_output_list():
-                    scope_dict = {
-                        name: var.create_output_tuple()
-                        for name, var in scope.create_output_dict().items()
-                    }
+                    scope_dict = {}
+                    for name, var in scope.create_output_dict().items():
+                        if var is not None:
+                            scope_dict[name] = var.create_output_tuple()
+
                     inner_list.append(scope_dict)
 
             out.append(inner_list)
@@ -269,8 +273,6 @@ class Interpreter(InterpreterBase):
 
             # still need to append the arguments list to the end of previous stack
             self.check_function_args(args[0], args[1:])
-
-            self.handle_parameters(args[0], args[1:])
 
             self.function_stack.append_new_scope_stack()
 
@@ -521,6 +523,7 @@ class Interpreter(InterpreterBase):
 
     # given a variable name and a Value object, associate the name with the value
     def _set_value(self, varname, value_type):
+
         current_scope = self.function_stack.get_current_function().get_current_scope()
         current_scope.set(varname, value_type)
 
@@ -589,28 +592,36 @@ class Interpreter(InterpreterBase):
         return
 
     def create_default_object(self, given_type):
-        if given_type == "int":
+        if given_type == "int" or given_type == Type.INT or given_type == Type.REFINT:
             return Value(Type.INT, True, 0)
-        elif given_type == "bool":
+        elif (
+            given_type == "bool"
+            or given_type == Type.BOOL
+            or given_type == Type.REFBOOL
+        ):
             return Value(Type.BOOL, True, False)
-        elif given_type == "string":
+        elif (
+            given_type == "string"
+            or given_type == Type.REFSTRING
+            or given_type == Type.STRING
+        ):
             return Value(Type.STRING, True, "")
 
-    def create_var_from_arg(self, given_type):
-        if given_type == Type.INT:
-            return Value(Type.INT, True, 0)
-        elif given_type == Type.BOOL:
-            return Value(Type.BOOL, True, False)
-        elif given_type == Type.STRING:
-            return Value(Type.STRING, True, "")
-        elif given_type == Type.REFINT:
-            return Value(Type.REFINT, True, 0)
-        elif given_type == Type.REFBOOL:
-            return Value(Type.REFBOOL, True, False)
-        elif given_type == Type.REFSTRING:
-            return Value(Type.REFSTRING, True, "")
+    # def create_var_from_arg(self, given_type):
+    #     if given_type == Type.INT:
+    #         return Value(Type.INT, True, 0)
+    #     elif given_type == Type.BOOL:
+    #         return Value(Type.BOOL, True, False)
+    #     elif given_type == Type.STRING:
+    #         return Value(Type.STRING, True, "")
+    #     elif given_type == Type.REFINT:
+    #         return Value(Type.REFINT, True, 0)
+    #     elif given_type == Type.REFBOOL:
+    #         return Value(Type.REFBOOL, True, False)
+    #     elif given_type == Type.REFSTRING:
+    #         return Value(Type.REFSTRING, True, "")
 
-        return
+    #     return
 
     def propagate_normal_variable(self, varname, value_to_propagate):
 
@@ -662,20 +673,29 @@ class Interpreter(InterpreterBase):
             if arg_obj.get_type() % 3 != arg_type % 3:
                 super().error(ErrorType.TYPE_ERROR, "Types are not compatible", self.ip)
 
-        return
-
-    def handle_parameters(self, func_name, args):
         argslist = []
         argslist.append(func_name)
 
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
-        for arg in args:
+        # whats passed into the funccall
+        for i, arg_obj in enumerate(argument_objects):
+            arg_name, arg_type = func_info.parameters[i]
+            # print(arg_obj.get_type())
+            # print(arg_type)
 
-            if current_scope.has_defined(arg):
-                argslist.append((self._get_value(arg), 1))
+            # print(arg_name)
+
+            if current_scope.has_defined(arg_name):
+                if arg_type < 4:
+                    argslist.append((Value(arg_obj.get_type(), False, arg_name), 1))
+                else:
+                    argslist.append((arg_name, 1))
             else:
-                argslist.append((self._get_value(arg), 0))
+                if arg_type < 4:
+                    argslist.append((Value(arg_obj.get_type(), False, arg_name), 0))
+                else:
+                    argslist.append((arg_name, 0))
 
         current_scope_stack = self.function_stack.get_current_function()
 
@@ -706,7 +726,7 @@ class Interpreter(InterpreterBase):
 
             # else not yet defined or shadowing
             else:
-                new_value_object = self.create_var_from_arg(arg_type)
+                new_value_object = self.create_default_object(arg_type)
                 self._set_value(arg_name, new_value_object)
 
         return
