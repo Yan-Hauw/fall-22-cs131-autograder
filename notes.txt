@@ -137,9 +137,9 @@ Need to update all assignment functions to allow for the ref-* type variables
 
 
 
+Defining variables:
 
-
-
+If a variable is in a scope it has been defined, if its not in a scope, it hasn't been defined
 
 
 
