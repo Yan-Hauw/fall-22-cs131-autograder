@@ -19,18 +19,23 @@ class Value:
         self.v = value
         self.defined_in_this_scope = defined_here
 
-    def value(self):
+    def get_value(self):
         return self.v
 
     def set(self, other):
         self.t = other.t
         self.v = other.v
 
-    def type(self):
+    def get_type(self):
         return self.t
 
     def set_defined_here_flag(self, defined_here):
         self.defined_in_this_scope = defined_here
+        return
+
+    def set_value(self, value):
+        print("success")
+        self.value = value
         return
 
     def create_output_tuple(self):
@@ -62,6 +67,9 @@ class ScopeStack:
     def create_output_list(self):
         return self.scope_stack
 
+    def get_scope_by_index(self, index):
+        return self.scope_stack[index]
+
 
 class FunctionStack:
     def __init__(self):
@@ -91,10 +99,13 @@ class FunctionStack:
 
         return out
 
+    def create_output_list(self):
+        return self.function_stack
+
 
 # Main interpreter class
 class Interpreter(InterpreterBase):
-    def __init__(self, console_output=True, input=None, trace_output=False):
+    def __init__(self, console_output=True, input=None, trace_output=True):
         super().__init__(console_output, input)
         self._setup_operations()  # setup all valid binary operations and the types they work on
         self.trace_output = trace_output
@@ -202,14 +213,16 @@ class Interpreter(InterpreterBase):
         if initial_value_obj and initial_value_obj.defined_in_this_scope == True:
             value_type.defined_in_this_scope = True
 
-        if initial_value_obj.type != value_type.type:
+        if initial_value_obj.get_type() != value_type.get_type():
             super().error(
                 ErrorType.TYPE_ERROR,
-                f"Mismatching types {initial_value_obj.type()} and {value_type.type()}",
+                f"Mismatching types {initial_value_obj.get_type()} and {value_type.get_type()}",
                 self.ip,
             )  #!
 
-        self._set_value(tokens[0], value_type)
+        # self._set_value(tokens[0], value_type)
+
+        self.propagate_normal_variable(vname, value_type.get_value())
         self._advance_to_next_statement()
 
     def _funccall(self, args):
@@ -243,11 +256,11 @@ class Interpreter(InterpreterBase):
         if not args:
             super().error(ErrorType.SYNTAX_ERROR, "Invalid if syntax", self.ip)  # no
         value_type = self._eval_expression(args)
-        if value_type.type() != Type.BOOL:
+        if value_type.get_type() != Type.BOOL:
             super().error(
                 ErrorType.TYPE_ERROR, "Non-boolean if expression", self.ip
             )  #!
-        if value_type.value():
+        if value_type.get_value():
             self._advance_to_next_statement()
 
             self.enter_new_scope()
@@ -302,11 +315,11 @@ class Interpreter(InterpreterBase):
                 ErrorType.SYNTAX_ERROR, "Missing while expression", self.ip
             )  # no
         value_type = self._eval_expression(args)
-        if value_type.type() != Type.BOOL:
+        if value_type.get_type() != Type.BOOL:
             super().error(
                 ErrorType.TYPE_ERROR, "Non-boolean while expression", self.ip
             )  #!
-        if value_type.value() == False:
+        if value_type.get_value() == False:
             self._exit_while()
             return
 
@@ -361,7 +374,7 @@ class Interpreter(InterpreterBase):
         out = []
         for arg in args:
             val_type = self._get_value(arg)
-            out.append(str(val_type.value()))
+            out.append(str(val_type.get_value()))
         super().output("".join(out))
 
     def _input(self, args):
@@ -378,12 +391,13 @@ class Interpreter(InterpreterBase):
                 ErrorType.SYNTAX_ERROR, "Invalid strtoint call syntax", self.ip
             )  # no
         value_type = self._get_value(args[0])
-        if value_type.type() != Type.STRING:
+        if value_type.get_type() != Type.STRING:
             super().error(
                 ErrorType.TYPE_ERROR, "Non-string passed to strtoint", self.ip
             )  #!
         self._set_value(
-            InterpreterBase.RESULT_DEF, Value(Type.INT, False, int(value_type.value()))
+            InterpreterBase.RESULT_DEF,
+            Value(Type.INT, False, int(value_type.get_value())),
         )  # return always passed back in result
 
     def _advance_to_next_statement(self):
@@ -409,34 +423,34 @@ class Interpreter(InterpreterBase):
         ]
         self.binary_ops = {}
         self.binary_ops[Type.INT] = {
-            "+": lambda a, b: Value(Type.INT, False, a.value() + b.value()),
-            "-": lambda a, b: Value(Type.INT, False, a.value() - b.value()),
-            "*": lambda a, b: Value(Type.INT, False, a.value() * b.value()),
+            "+": lambda a, b: Value(Type.INT, False, a.get_value() + b.get_value()),
+            "-": lambda a, b: Value(Type.INT, False, a.get_value() - b.get_value()),
+            "*": lambda a, b: Value(Type.INT, False, a.get_value() * b.get_value()),
             "/": lambda a, b: Value(
-                Type.INT, False, a.value() // b.value()
+                Type.INT, False, a.get_value() // b.get_value()
             ),  # // for integer ops
-            "%": lambda a, b: Value(Type.INT, False, a.value() % b.value()),
-            "==": lambda a, b: Value(Type.BOOL, False, a.value() == b.value()),
-            "!=": lambda a, b: Value(Type.BOOL, False, a.value() != b.value()),
-            ">": lambda a, b: Value(Type.BOOL, False, a.value() > b.value()),
-            "<": lambda a, b: Value(Type.BOOL, False, a.value() < b.value()),
-            ">=": lambda a, b: Value(Type.BOOL, False, a.value() >= b.value()),
-            "<=": lambda a, b: Value(Type.BOOL, False, a.value() <= b.value()),
+            "%": lambda a, b: Value(Type.INT, False, a.get_value() % b.get_value()),
+            "==": lambda a, b: Value(Type.BOOL, False, a.get_value() == b.get_value()),
+            "!=": lambda a, b: Value(Type.BOOL, False, a.get_value() != b.get_value()),
+            ">": lambda a, b: Value(Type.BOOL, False, a.get_value() > b.get_value()),
+            "<": lambda a, b: Value(Type.BOOL, False, a.get_value() < b.get_value()),
+            ">=": lambda a, b: Value(Type.BOOL, False, a.get_value() >= b.get_value()),
+            "<=": lambda a, b: Value(Type.BOOL, False, a.get_value() <= b.get_value()),
         }
         self.binary_ops[Type.STRING] = {
-            "+": lambda a, b: Value(Type.STRING, False, a.value() + b.value()),
-            "==": lambda a, b: Value(Type.BOOL, False, a.value() == b.value()),
-            "!=": lambda a, b: Value(Type.BOOL, False, a.value() != b.value()),
-            ">": lambda a, b: Value(Type.BOOL, False, a.value() > b.value()),
-            "<": lambda a, b: Value(Type.BOOL, False, a.value() < b.value()),
-            ">=": lambda a, b: Value(Type.BOOL, False, a.value() >= b.value()),
-            "<=": lambda a, b: Value(Type.BOOL, False, a.value() <= b.value()),
+            "+": lambda a, b: Value(Type.STRING, False, a.get_value() + b.get_value()),
+            "==": lambda a, b: Value(Type.BOOL, False, a.get_value() == b.get_value()),
+            "!=": lambda a, b: Value(Type.BOOL, False, a.get_value() != b.get_value()),
+            ">": lambda a, b: Value(Type.BOOL, False, a.get_value() > b.get_value()),
+            "<": lambda a, b: Value(Type.BOOL, False, a.get_value() < b.get_value()),
+            ">=": lambda a, b: Value(Type.BOOL, False, a.get_value() >= b.get_value()),
+            "<=": lambda a, b: Value(Type.BOOL, False, a.get_value() <= b.get_value()),
         }
         self.binary_ops[Type.BOOL] = {
-            "&": lambda a, b: Value(Type.BOOL, False, a.value() and b.value()),
-            "==": lambda a, b: Value(Type.BOOL, False, a.value() == b.value()),
-            "!=": lambda a, b: Value(Type.BOOL, False, a.value() != b.value()),
-            "|": lambda a, b: Value(Type.BOOL, False, a.value() or b.value()),
+            "&": lambda a, b: Value(Type.BOOL, False, a.get_value() and b.get_value()),
+            "==": lambda a, b: Value(Type.BOOL, False, a.get_value() == b.get_value()),
+            "!=": lambda a, b: Value(Type.BOOL, False, a.get_value() != b.get_value()),
+            "|": lambda a, b: Value(Type.BOOL, False, a.get_value() or b.get_value()),
         }
 
     def _compute_indentation(self, program):
@@ -494,30 +508,31 @@ class Interpreter(InterpreterBase):
             if token in self.binary_op_list:
                 v1 = stack.pop()
                 v2 = stack.pop()
-                if v1.type() != v2.type():
+                if v1.get_type() != v2.get_type():
                     super().error(
                         ErrorType.TYPE_ERROR,
-                        f"Mismatching types {v1.type()} and {v2.type()}",
+                        f"Mismatching types {v1.get_type()} and {v2.get_type()}",
                         self.ip,
                     )  #!
-                operations = self.binary_ops[v1.type()]
+                operations = self.binary_ops[v1.get_type()]
                 if token not in operations:
                     super().error(
                         ErrorType.TYPE_ERROR,
-                        f"Operator {token} is not compatible with {v1.type()}",
+                        f"Operator {token} is not compatible with {v1.get_type()}",
                         self.ip,
                     )  #!
 
                 stack.append(operations[token](v1, v2))
+                # print(stack)
             elif token == "!":
                 v1 = stack.pop()
-                if v1.type() != Type.BOOL:
+                if v1.get_type() != Type.BOOL:
                     super().error(
                         ErrorType.TYPE_ERROR,
-                        f"Expecting boolean for ! {v1.type()}",
+                        f"Expecting boolean for ! {v1.get_type()}",
                         self.ip,
                     )  #!
-                stack.append(Value(Type.BOOL, not v1.value()))
+                stack.append(Value(Type.BOOL, not v1.get_value()))
             else:
                 value_type = self._get_value(token)
                 stack.append(value_type)
@@ -550,3 +565,36 @@ class Interpreter(InterpreterBase):
             return Value(Type.BOOL, True, False)
         elif type == "string":
             return Value(Type.STRING, True, "")
+
+    def propagate_normal_variable(self, varname, value_to_propagate):
+
+        current_scope_stack = self.function_stack.get_current_function()
+
+        scope_stack_length = len(current_scope_stack.create_output_list())
+
+        for i in range(scope_stack_length - 1, -1, -1):
+
+            print(i)
+
+            current_scope = (
+                self.function_stack.get_current_function().get_scope_by_index(i)
+            )
+
+            old_obj = current_scope.get(varname)
+
+            current_scope.set(
+                varname,
+                Value(
+                    old_obj.get_type(),
+                    old_obj.defined_in_this_scope,
+                    value_to_propagate,
+                ),
+            )
+
+            if (
+                current_scope_stack.get_scope_by_index(i)
+                .create_output_dict()[varname]
+                .defined_in_this_scope
+                == True
+            ):
+                break
