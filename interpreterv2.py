@@ -4,12 +4,7 @@ from intbase import InterpreterBase, ErrorType
 from env_v1 import EnvironmentManager
 from tokenize import Tokenizer
 from func_v1 import FunctionManager
-
-# Enumerated type for our different language data types
-class Type(Enum):
-    INT = 1
-    BOOL = 2
-    STRING = 3
+from type_class import Type
 
 
 # Represents a value, which has a type and its value
@@ -36,6 +31,10 @@ class Value:
     def set_value(self, value):
         print("success")
         self.value = value
+        return
+
+    def set_type(self, new_type):
+        self.t = new_type
         return
 
     def create_output_tuple(self):
@@ -70,6 +69,10 @@ class ScopeStack:
     def get_scope_by_index(self, index):
         return self.scope_stack[index]
 
+    def append_arguments(self, argset):
+        self.scope_stack.append(argset)
+        return
+
 
 class FunctionStack:
     def __init__(self):
@@ -88,12 +91,31 @@ class FunctionStack:
         out = []
         for scope_stack in self.function_stack:
             inner_list = []
-            for scope in scope_stack.create_output_list():
-                scope_dict = {
-                    name: var.create_output_tuple()
-                    for name, var in scope.create_output_dict().items()
-                }
-                inner_list.append(scope_dict)
+            scope_stack_last = scope_stack.create_output_list()[-1]
+
+            if isinstance(scope_stack_last, list):
+                for scope in scope_stack.create_output_list()[0:-1]:
+                    scope_dict = {
+                        name: var.create_output_tuple()
+                        for name, var in scope.create_output_dict().items()
+                    }
+                    inner_list.append(scope_dict)
+                scope_stack_last_output = []
+                scope_stack_last_output.append(scope_stack_last[0])
+                for tup in scope_stack_last[1:]:
+                    scope_stack_last_output.append(
+                        (tup[0].create_output_tuple(), tup[1])
+                    )
+
+                inner_list.append(scope_stack_last_output)
+
+            else:
+                for scope in scope_stack.create_output_list():
+                    scope_dict = {
+                        name: var.create_output_tuple()
+                        for name, var in scope.create_output_dict().items()
+                    }
+                    inner_list.append(scope_dict)
 
             out.append(inner_list)
 
@@ -120,6 +142,8 @@ class Interpreter(InterpreterBase):
         self.return_stack = []
         self.function_stack = FunctionStack()
         self.terminate = False
+
+        print(self.func_manager.func_cache["f"].parameters)
 
         # main interpreter run loop
         while not self.terminate:
@@ -244,6 +268,10 @@ class Interpreter(InterpreterBase):
             self.ip = self._find_first_instruction(args[0])
 
             # still need to append the arguments list to the end of previous stack
+            self.check_function_args(args[0], args[1:])
+
+            self.handle_parameters(args[0], args[1:])
+
             self.function_stack.append_new_scope_stack()
 
     def _endfunc(self):
@@ -598,3 +626,41 @@ class Interpreter(InterpreterBase):
                 == True
             ):
                 break
+
+    def check_function_args(self, func_name, args):
+        func_info = self.func_manager.get_function_info(func_name)
+
+        argument_objects = [self._get_value(arg) for arg in args]
+
+        if len(func_info.parameters) != len(args):
+            super().error(
+                ErrorType.NAME_ERROR, "Num of arguments does not match", self.ip
+            )
+
+        for i, arg_obj in enumerate(argument_objects):
+            _, arg_type = func_info.parameters[i]
+            # print(arg_obj.get_type())
+            # print(arg_type)
+            if arg_obj.get_type() % 3 != arg_type % 3:
+                super().error(ErrorType.TYPE_ERROR, "Types are not compatible", self.ip)
+
+        return
+
+    def handle_parameters(self, func_name, args):
+        argslist = []
+        argslist.append(func_name)
+
+        current_scope = self.function_stack.get_current_function().get_current_scope()
+
+        for arg in args:
+
+            if current_scope.has_defined(arg):
+                argslist.append((self._get_value(arg), 1))
+            else:
+                argslist.append((self._get_value(arg), 0))
+
+        current_scope_stack = self.function_stack.get_current_function()
+
+        current_scope_stack.append_arguments(argslist)
+
+        return
