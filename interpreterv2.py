@@ -202,6 +202,13 @@ class Interpreter(InterpreterBase):
         if initial_value_obj and initial_value_obj.defined_in_this_scope == True:
             value_type.defined_in_this_scope = True
 
+        if initial_value_obj.type != value_type.type:
+            super().error(
+                ErrorType.TYPE_ERROR,
+                f"Mismatching types {initial_value_obj.type()} and {value_type.type()}",
+                self.ip,
+            )  #!
+
         self._set_value(tokens[0], value_type)
         self._advance_to_next_statement()
 
