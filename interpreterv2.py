@@ -189,7 +189,7 @@ class Interpreter(InterpreterBase):
         self._advance_to_next_statement()
 
     def _define(self, args):
-        type = args[0]
+        def_type = args[0]
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
         for varname in args[1 : len(args)]:
@@ -209,7 +209,7 @@ class Interpreter(InterpreterBase):
 
             # else not yet defined or shadowing
             else:
-                new_value_object = self.create_default_object(type)
+                new_value_object = self.create_default_object(def_type)
                 self._set_value(varname, new_value_object)
 
         self._advance_to_next_statement()
@@ -273,6 +273,8 @@ class Interpreter(InterpreterBase):
             self.handle_parameters(args[0], args[1:])
 
             self.function_stack.append_new_scope_stack()
+
+            self.define_vars_for_args(args[0])
 
     def _endfunc(self):
         if not self.return_stack:  # done with main!
@@ -586,13 +588,29 @@ class Interpreter(InterpreterBase):
         current_function.leave_inner_scope()
         return
 
-    def create_default_object(self, type):
-        if type == "int":
+    def create_default_object(self, given_type):
+        if given_type == "int":
             return Value(Type.INT, True, 0)
-        elif type == "bool":
+        elif given_type == "bool":
             return Value(Type.BOOL, True, False)
-        elif type == "string":
+        elif given_type == "string":
             return Value(Type.STRING, True, "")
+
+    def create_var_from_arg(self, given_type):
+        if given_type == Type.INT:
+            return Value(Type.INT, True, 0)
+        elif given_type == Type.BOOL:
+            return Value(Type.BOOL, True, False)
+        elif given_type == Type.STRING:
+            return Value(Type.STRING, True, "")
+        elif given_type == Type.REFINT:
+            return Value(Type.REFINT, True, 0)
+        elif given_type == Type.REFBOOL:
+            return Value(Type.REFBOOL, True, False)
+        elif given_type == Type.REFSTRING:
+            return Value(Type.REFSTRING, True, "")
+
+        return
 
     def propagate_normal_variable(self, varname, value_to_propagate):
 
@@ -662,5 +680,33 @@ class Interpreter(InterpreterBase):
         current_scope_stack = self.function_stack.get_current_function()
 
         current_scope_stack.append_arguments(argslist)
+
+        return
+
+    def define_vars_for_args(self, func_name):
+        current_scope = self.function_stack.get_current_function().get_current_scope()
+
+        params = self.func_manager.get_function_info(func_name).parameters
+
+        for param in params:
+            arg_name, arg_type = param
+
+            value_obj = current_scope.get(arg_name)
+
+            # if variable already defined in this scope
+            if value_obj and value_obj.defined_in_this_scope == True:
+                super().error(
+                    ErrorType.NAME_ERROR,
+                    f"Should not be happening. something very wrong",
+                    self.ip,
+                )  # no
+
+            # if definition of unknown type
+            # not tested
+
+            # else not yet defined or shadowing
+            else:
+                new_value_object = self.create_var_from_arg(arg_type)
+                self._set_value(arg_name, new_value_object)
 
         return
