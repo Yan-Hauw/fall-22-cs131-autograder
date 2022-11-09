@@ -255,7 +255,7 @@ class Interpreter(InterpreterBase):
         if initial_value_obj and initial_value_obj.defined_in_this_scope == True:
             value_type.defined_in_this_scope = True
 
-        if initial_value_obj.get_type() != value_type.get_type():
+        if initial_value_obj.get_type() % 3 != value_type.get_type() % 3:
             super().error(
                 ErrorType.TYPE_ERROR,
                 f"Mismatching types {initial_value_obj.get_type()} and {value_type.get_type()}",
@@ -285,12 +285,17 @@ class Interpreter(InterpreterBase):
             self.return_stack.append(self.ip + 1)
             self.ip = self._find_first_instruction(args[0])
 
+            arguments = []
+            for arg in args[1:]:
+                val_obj = self._get_value(arg)
+                arguments.append(val_obj)
+
             # still need to append the arguments list to the end of previous stack
             self.check_function_args(args[0], args[1:])
 
             self.function_stack.append_new_scope_stack()
 
-            self.define_vars_for_args(args[0])
+            self.define_vars_for_args(args[0], arguments)
 
     def _endfunc(self):
         if not self.return_stack:  # done with main!
@@ -298,7 +303,7 @@ class Interpreter(InterpreterBase):
         else:
             self.ip = self.return_stack.pop()
             vars_to_propagate = self.get_vars_to_propagate()
-            # print("vars", vars_to_propagate)
+            print("vars", vars_to_propagate)
             self.function_stack.pop_scope_stack()
             # pop stored list
             current_scope_stack = self.function_stack.get_current_function()
@@ -813,12 +818,12 @@ class Interpreter(InterpreterBase):
 
         return
 
-    def define_vars_for_args(self, func_name):
+    def define_vars_for_args(self, func_name, args):
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
         params = self.func_manager.get_function_info(func_name).parameters
 
-        for param in params:
+        for i, param in enumerate(params):
             arg_name, arg_type = param
 
             value_obj = current_scope.get(arg_name)
@@ -836,8 +841,12 @@ class Interpreter(InterpreterBase):
 
             # else not yet defined or shadowing
             else:
-                new_value_object = self.create_default_object(arg_type)
-                self._set_value(arg_name, new_value_object)
+                self._set_value(
+                    arg_name, Value(args[i].get_type(), True, args[i].get_value())
+                )
+
+                # new_value_object = self.create_default_object(arg_type)
+                # self._set_value(arg_name, new_value_object)
 
         return
 
