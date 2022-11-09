@@ -478,9 +478,10 @@ class Interpreter(InterpreterBase):
         if args:
             self._print(args)
         result = super().get_input()
-        self._set_value(
-            InterpreterBase.RESULT_DEF, Value(Type.STRING, False, result)
-        )  # return always passed back in result
+        # self._set_value(
+        #     InterpreterBase.RESULT_DEF, Value(Type.STRING, False, result)
+        # )  # return always passed back in result
+        self.propagate_normal_variable(InterpreterBase.RESULT_DEF + "s", result)
 
     def _strtoint(self, args):
         if len(args) != 1:
@@ -492,10 +493,13 @@ class Interpreter(InterpreterBase):
             super().error(
                 ErrorType.TYPE_ERROR, "Non-string passed to strtoint", self.ip
             )  #!
-        self._set_value(
-            InterpreterBase.RESULT_DEF,
-            Value(Type.INT, False, int(value_type.get_value())),
-        )  # return always passed back in result
+        # self._set_value(
+        #     InterpreterBase.RESULT_DEF,
+        #     Value(Type.INT, False, int(value_type.get_value())),
+        # )  # return always passed back in result
+        self.propagate_normal_variable(
+            InterpreterBase.RESULT_DEF + "i", int(value_type.get_value())
+        )
 
     def _advance_to_next_statement(self):
         # for now just increment IP, but later deal with loops, returns, end of functions, etc.
