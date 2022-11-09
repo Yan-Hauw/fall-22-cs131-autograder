@@ -357,37 +357,37 @@ class Interpreter(InterpreterBase):
         super().error(ErrorType.SYNTAX_ERROR, "Missing endif", self.ip)  # no
 
     def _return(self, args):
-        if not args:
-            self._endfunc()
-
-            # return default
-
-            return
-        value_type = self._eval_expression(args)
-        # self._set_value(
-        #     InterpreterBase.RESULT_DEF, value_type
-        # )  # return always passed back in result
-
-        # check return type
-
-        # identify the vars to take to parent function
-        # identify normal vars
-
         vars_to_propagate = self.get_vars_to_propagate()
 
-        # identify the 1 result var
+        return_type = self.get_return_type()
 
-        match value_type.get_type():
+        if args:
+            value_type = self._eval_expression(args)
+
+            if return_type != value_type.get_type():
+                super().error(
+                    ErrorType.TYPE_ERROR,
+                    f"Incompatible with return type of the function",
+                    self.ip,
+                )  #!
+
+        match return_type:
             case Type.BOOL:
                 varname = InterpreterBase.RESULT_DEF + "b"
-                vars_to_propagate.append((varname, value_type.get_value()))
+                vars_to_propagate.append(
+                    (varname, value_type.get_value() if args else False)
+                )
 
             case Type.INT:
                 varname = InterpreterBase.RESULT_DEF + "i"
-                vars_to_propagate.append((varname, value_type.get_value()))
+                vars_to_propagate.append(
+                    (varname, value_type.get_value() if args else 0)
+                )
             case Type.STRING:
                 varname = InterpreterBase.RESULT_DEF + "s"
-                vars_to_propagate.append((varname, value_type.get_value()))
+                vars_to_propagate.append(
+                    (varname, value_type.get_value() if args else "")
+                )
 
         print("vars", vars_to_propagate)
 
@@ -836,3 +836,12 @@ class Interpreter(InterpreterBase):
                 self._set_value(arg_name, new_value_object)
 
         return
+
+    def get_return_type(self):
+        stored_list = self.function_stack.get_scope_stack_by_index(-2).get_end_list()
+
+        func_name = stored_list[0]
+
+        return_type = self.func_manager.get_function_info(func_name).return_type
+
+        return return_type
