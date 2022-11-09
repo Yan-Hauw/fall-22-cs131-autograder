@@ -298,7 +298,7 @@ class Interpreter(InterpreterBase):
         else:
             self.ip = self.return_stack.pop()
             vars_to_propagate = self.get_vars_to_propagate()
-            print("vars", vars_to_propagate)
+            # print("vars", vars_to_propagate)
             self.function_stack.pop_scope_stack()
             # pop stored list
             current_scope_stack = self.function_stack.get_current_function()
@@ -359,12 +359,52 @@ class Interpreter(InterpreterBase):
     def _return(self, args):
         if not args:
             self._endfunc()
+
+            # return default
+
             return
         value_type = self._eval_expression(args)
-        self._set_value(
-            InterpreterBase.RESULT_DEF, value_type
-        )  # return always passed back in result
-        self._endfunc()
+        # self._set_value(
+        #     InterpreterBase.RESULT_DEF, value_type
+        # )  # return always passed back in result
+
+        # check return type
+
+        # identify the vars to take to parent function
+        # identify normal vars
+
+        vars_to_propagate = self.get_vars_to_propagate()
+
+        # identify the 1 result var
+
+        match value_type.get_type():
+            case Type.BOOL:
+                varname = InterpreterBase.RESULT_DEF + "b"
+                vars_to_propagate.append((varname, value_type.get_value()))
+
+            case Type.INT:
+                varname = InterpreterBase.RESULT_DEF + "i"
+                vars_to_propagate.append((varname, value_type.get_value()))
+            case Type.STRING:
+                varname = InterpreterBase.RESULT_DEF + "s"
+                vars_to_propagate.append((varname, value_type.get_value()))
+
+        print("vars", vars_to_propagate)
+
+        self.function_stack.pop_scope_stack()
+        # pop stored list
+        current_scope_stack = self.function_stack.get_current_function()
+        current_scope_stack.pop_end_list()
+        print(current_scope_stack.create_output_list())
+
+        for var in vars_to_propagate:
+            varname, val = var
+            self.propagate_normal_variable(varname, val)
+
+        if not self.return_stack:  # done with main!
+            self.terminate = True
+        else:
+            self.ip = self.return_stack.pop()
 
     def _while(self, args):
         if not args:
@@ -693,16 +733,26 @@ class Interpreter(InterpreterBase):
                 self.function_stack.get_current_function().get_scope_by_index(i)
             )
 
-            old_obj = current_scope.get(varname)
+            if varname == "results" or varname == "resulti" or varname == "resultb":
+                if varname == "resultb":
+                    vartype = Type.BOOL
+                elif varname == "results":
+                    vartype = Type.STRING
+                elif varname == "resulti":
+                    vartype = Type.INT
+                current_scope.set(varname, Value(vartype, False, value_to_propagate))
 
-            current_scope.set(
-                varname,
-                Value(
-                    old_obj.get_type(),
-                    old_obj.defined_in_this_scope,
-                    value_to_propagate,
-                ),
-            )
+            else:
+                old_obj = current_scope.get(varname)
+
+                current_scope.set(
+                    varname,
+                    Value(
+                        old_obj.get_type(),
+                        old_obj.defined_in_this_scope,
+                        value_to_propagate,
+                    ),
+                )
 
             if (
                 current_scope_stack.get_scope_by_index(i)
