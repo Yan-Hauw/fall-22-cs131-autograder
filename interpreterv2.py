@@ -73,6 +73,13 @@ class ScopeStack:
         self.scope_stack.append(argset)
         return
 
+    def get_end_list(self):
+        return self.scope_stack[-1]
+
+    def pop_end_list(self):
+        self.scope_stack.pop()
+        return
+
 
 class FunctionStack:
     def __init__(self):
@@ -86,6 +93,13 @@ class FunctionStack:
     def append_new_scope_stack(self):
         self.function_stack.append(ScopeStack())
         return
+
+    def pop_scope_stack(self):
+        self.function_stack.pop()
+        return
+
+    def get_scope_stack_by_index(self, index):
+        return self.function_stack[index]
 
     def produce_output_object(self):
         out = []
@@ -147,7 +161,7 @@ class Interpreter(InterpreterBase):
         self.function_stack = FunctionStack()
         self.terminate = False
 
-        print(self.func_manager.func_cache["f"].parameters)
+        # print(self.func_manager.func_cache["f"].parameters)
 
         # main interpreter run loop
         while not self.terminate:
@@ -283,6 +297,17 @@ class Interpreter(InterpreterBase):
             self.terminate = True
         else:
             self.ip = self.return_stack.pop()
+            vars_to_propagate = self.get_vars_to_propagate()
+            print("vars", vars_to_propagate)
+            self.function_stack.pop_scope_stack()
+            # pop stored list
+            current_scope_stack = self.function_stack.get_current_function()
+            current_scope_stack.pop_end_list()
+            print(current_scope_stack.create_output_list())
+
+            for var in vars_to_propagate:
+                varname, val = var
+                self.propagate_normal_variable(varname, val)
 
     def _if(self, args):
         if not args:
@@ -623,6 +648,37 @@ class Interpreter(InterpreterBase):
 
     #     return
 
+    def get_vars_to_propagate(self):
+
+        stored_list = self.function_stack.get_scope_stack_by_index(-2).get_end_list()
+
+        func_name = stored_list[0]
+
+        print(func_name)
+
+        list_of_args = stored_list[1:]
+
+        current_scope = self.function_stack.get_current_function().get_current_scope()
+
+        params = self.func_manager.get_function_info(func_name).parameters
+
+        vars_to_propagate = []
+
+        for i, param in enumerate(params):
+            param_name, _ = param
+            val = current_scope.get(param_name).get_value()
+
+            arg = list_of_args[i]
+            if isinstance(arg[0], str):
+                if arg[1] == 1:
+                    vars_to_propagate.append((arg[0], val))
+                else:
+                    pass
+            else:
+                pass
+
+        return vars_to_propagate
+
     def propagate_normal_variable(self, varname, value_to_propagate):
 
         current_scope_stack = self.function_stack.get_current_function()
@@ -679,23 +735,23 @@ class Interpreter(InterpreterBase):
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
         # whats passed into the funccall
-        for i, arg_obj in enumerate(argument_objects):
+        for i, arg in enumerate(args):
             arg_name, arg_type = func_info.parameters[i]
             # print(arg_obj.get_type())
             # print(arg_type)
 
             # print(arg_name)
 
-            if current_scope.has_defined(arg_name):
+            if current_scope.has_defined(arg):
                 if arg_type < 4:
-                    argslist.append((Value(arg_obj.get_type(), False, arg_name), 1))
+                    argslist.append((Value(arg, False, arg_name), 1))
                 else:
-                    argslist.append((arg_name, 1))
+                    argslist.append((arg, 1))
             else:
                 if arg_type < 4:
-                    argslist.append((Value(arg_obj.get_type(), False, arg_name), 0))
+                    argslist.append((Value(arg, False, arg_name), 0))
                 else:
-                    argslist.append((arg_name, 0))
+                    argslist.append((arg, 0))
 
         current_scope_stack = self.function_stack.get_current_function()
 
