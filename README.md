@@ -38,7 +38,7 @@ Your next steps depend on what you're trying to do.
 
 ### Testing Locally
 
-To test locally, you will additionally need a **working implementation** of the project; the minimum example is an `interpreterv1.py`/`interpreterv2.py` that implements the `Interpreter` class.
+To test locally, you will additionally need a **working implementation** of the project; the minimum example is an `interpreterv1.py`/`interpreterv2.py`/`interpreterv3.py` that implements the `Interpreter` class.
 
 Place this in the same directory as `tester.py`. Then, to test project 1,
 
@@ -91,10 +91,13 @@ Running failsv2/test24.src...  PASSED
 Running failsv2/test27.src...  PASSED
 25/25 tests passed.
 Total Score:    100.00%
-...
 ```
 
-And version `3` with `python3 tester.py 3`.
+And version `3` with `python3 tester.py 3`:
+
+```sh
+$ python3 tester.py 2
+```
 
 The output of this command is **identical to what is visible on Gradescope pre-due date**, and they are the same cases that display on every submission. If there is a discrepancy, please let the teaching team know!
 
