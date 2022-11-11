@@ -128,8 +128,8 @@ def generate_test_suite_v2():
 
 def generate_test_suite_v3():
   version = "3"
-  successes = []
-  fails = []
+  successes = [20, 22, 37, 112, 113, 114, 122, 127, 140, 156, 201, 202, 203, 204, 205]
+  fails = [26, 27, 29, 30, 105]
   return generate_test_case_structure(
     successes,
     f'testsv{version}/',

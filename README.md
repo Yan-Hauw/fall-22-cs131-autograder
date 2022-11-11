@@ -13,7 +13,7 @@ This repository contains:
 
 This repository does not contain:
 
-- 80% of the test cases we evaluate your code on
+- 80% of the test cases we evaluate your code on (until *after* the project is due)
 - the plagiarism checker, which is closed-source
 - the Docker configuration for the deployment; this is managed by Gradescope
 - canonical solutions for the past projects - those are in the [project template repo](https://github.com/UCLA-CS-131/fall-22-proj-starter)
@@ -96,7 +96,30 @@ Total Score:    100.00%
 And version `3` with `python3 tester.py 3`:
 
 ```sh
-$ python3 tester.py 2
+$ python3 tester.py 3
+Running 20 tests...
+Running testsv3/test20.src...  PASSED
+Running testsv3/test22.src...  PASSED
+Running testsv3/test37.src...  PASSED
+Running testsv3/test112.src...  PASSED
+Running testsv3/test113.src...  PASSED
+Running testsv3/test114.src...  PASSED
+Running testsv3/test122.src...  PASSED
+Running testsv3/test127.src...  PASSED
+Running testsv3/test140.src...  PASSED
+Running testsv3/test156.src...  PASSED
+Running testsv3/test201.src...  PASSED
+Running testsv3/test202.src...  PASSED
+Running testsv3/test203.src...  PASSED
+Running testsv3/test204.src...  PASSED
+Running testsv3/test205.src...  PASSED
+Running failsv3/test26.src...  PASSED
+Running failsv3/test27.src...  PASSED
+Running failsv3/test29.src...  PASSED
+Running failsv3/test30.src...  PASSED
+Running failsv3/test105.src...  PASSED
+20/20 tests passed.
+Total Score:    100.00%
 ```
 
 The output of this command is **identical to what is visible on Gradescope pre-due date**, and they are the same cases that display on every submission. If there is a discrepancy, please let the teaching team know!
