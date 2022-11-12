@@ -26,7 +26,7 @@ func map f:func l:object object
 endfunc
 
 func printlist l:object void
-  if ! l.end
+  if != l.end True
     funccall print l.val
     funccall printlist l.next
   endif
