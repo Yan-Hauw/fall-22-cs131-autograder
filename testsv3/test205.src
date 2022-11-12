@@ -1,6 +1,6 @@
 # check if input is palindrome
 func main void
-    funccall input
+    funccall input "Input:"
     var string sas
     assign sas results
     funccall strtoint sas
