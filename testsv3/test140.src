@@ -7,12 +7,12 @@ func main void
    var int capture_me
    assign capture_me 1000
    lambda a:int int
-    return + a capture_me	# the captured capture_me's value is 1000
+    return + a capture_me # the captured capture_me's value is 1000
    endlambda
  endif
 
  var func f
  assign f resultf
  funccall f 10
- funccall print resulti		# prints 1010
+ funccall print resulti  # prints 1010
 endfunc
