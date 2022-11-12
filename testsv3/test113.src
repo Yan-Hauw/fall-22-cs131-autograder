@@ -30,7 +30,7 @@ func filter f:func l:object object
 endfunc
 
 func printslist l:object void
-  if ! l.end
+  if != l.end True
     funccall print l.val
     funccall printslist l.next
   endif

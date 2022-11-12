@@ -5,7 +5,7 @@ func main void
     assign o.a "bar"
     var object o
     assign o.b True
-    if ! o.b
+    if == o.b False
       funccall print o.a
     else
       assign o.a 10
