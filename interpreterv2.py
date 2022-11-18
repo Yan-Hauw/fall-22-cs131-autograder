@@ -145,7 +145,7 @@ class FunctionStack:
 
 # Main interpreter class
 class Interpreter(InterpreterBase):
-    def __init__(self, console_output=True, input=None, trace_output=True):
+    def __init__(self, console_output=True, input=None, trace_output=False):
         super().__init__(console_output, input)
         self._setup_operations()  # setup all valid binary operations and the types they work on
         self.trace_output = trace_output
@@ -216,11 +216,7 @@ class Interpreter(InterpreterBase):
 
             # if variable already defined in this scope
             if value_obj and value_obj.defined_in_this_scope == True:
-                super().error(
-                    ErrorType.NAME_ERROR,
-                    f"Trying to redefine var in same scope",
-                    self.ip,
-                )  # no
+                super().error(ErrorType.NAME_ERROR, f"Trying to redefine var in same scope", self.ip)  # no
 
             # if definition of unknown type
             # not tested
@@ -240,11 +236,7 @@ class Interpreter(InterpreterBase):
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
         if not current_scope.has_defined(vname):
-            super().error(
-                ErrorType.NAME_ERROR,
-                f"Trying to assign undefined variable",
-                self.ip,
-            )  # no
+            super().error(ErrorType.NAME_ERROR, f"Trying to assign undefined variable", self.ip)  # no
 
         value_type = self._eval_expression(tokens[1:])
 
@@ -256,11 +248,7 @@ class Interpreter(InterpreterBase):
             value_type.defined_in_this_scope = True
 
         if initial_value_obj.get_type() % 3 != value_type.get_type() % 3:
-            super().error(
-                ErrorType.TYPE_ERROR,
-                f"Mismatching types {initial_value_obj.get_type()} and {value_type.get_type()}",
-                self.ip,
-            )  #!
+            super().error(ErrorType.TYPE_ERROR, f"Mismatching types {initial_value_obj.get_type()} and {value_type.get_type()}", self.ip)  #!
 
         # self._set_value(tokens[0], value_type)
 
@@ -269,9 +257,7 @@ class Interpreter(InterpreterBase):
 
     def _funccall(self, args):
         if not args:
-            super().error(
-                ErrorType.SYNTAX_ERROR, "Missing function name to call", self.ip
-            )  #!
+            super().error(ErrorType.SYNTAX_ERROR, "Missing function name to call", self.ip)  #!
         if args[0] == InterpreterBase.PRINT_DEF:
             self._print(args[1:])
             self._advance_to_next_statement()
@@ -283,7 +269,8 @@ class Interpreter(InterpreterBase):
             self._advance_to_next_statement()
         else:
             self.return_stack.append(self.ip + 1)
-            self.ip = self._find_first_instruction(args[0])
+
+
 
             arguments = []
             for arg in args[1:]:
@@ -296,6 +283,9 @@ class Interpreter(InterpreterBase):
             self.function_stack.append_new_scope_stack()
 
             self.define_vars_for_args(args[0], arguments)
+
+            self.ip = self._find_first_instruction(args[0])
+
 
     def _endfunc(self):
         if not self.return_stack:  # done with main!
@@ -319,9 +309,7 @@ class Interpreter(InterpreterBase):
             super().error(ErrorType.SYNTAX_ERROR, "Invalid if syntax", self.ip)  # no
         value_type = self._eval_expression(args)
         if value_type.get_type() != Type.BOOL:
-            super().error(
-                ErrorType.TYPE_ERROR, "Non-boolean if expression", self.ip
-            )  #!
+            super().error(ErrorType.TYPE_ERROR, "Non-boolean if expression", self.ip)  #!
         if value_type.get_value():
             self._advance_to_next_statement()
 
@@ -366,15 +354,10 @@ class Interpreter(InterpreterBase):
 
         return_type = self.get_return_type()
 
-        if args:
-            value_type = self._eval_expression(args)
+        value_type = self._eval_expression(args) if args else None
 
-            if return_type != value_type.get_type():
-                super().error(
-                    ErrorType.TYPE_ERROR,
-                    f"Incompatible with return type of the function",
-                    self.ip,
-                )  #!
+        if value_type and return_type % 3 != value_type.get_type() % 3:
+            super().error(ErrorType.TYPE_ERROR, f"Incompatible with return type of the function", self.ip)  #!
 
         match return_type:
             case Type.BOOL:
@@ -413,14 +396,10 @@ class Interpreter(InterpreterBase):
 
     def _while(self, args):
         if not args:
-            super().error(
-                ErrorType.SYNTAX_ERROR, "Missing while expression", self.ip
-            )  # no
+            super().error(ErrorType.SYNTAX_ERROR, "Missing while expression", self.ip)  # no
         value_type = self._eval_expression(args)
         if value_type.get_type() != Type.BOOL:
-            super().error(
-                ErrorType.TYPE_ERROR, "Non-boolean while expression", self.ip
-            )  #!
+            super().error(ErrorType.TYPE_ERROR, "Non-boolean while expression", self.ip)  #!
         if value_type.get_value() == False:
             self._exit_while()
             return
@@ -470,9 +449,7 @@ class Interpreter(InterpreterBase):
 
     def _print(self, args):
         if not args:
-            super().error(
-                ErrorType.SYNTAX_ERROR, "Invalid print call syntax", self.ip
-            )  # no
+            super().error(ErrorType.NAME_ERROR, "Invalid print call syntax", self.ip)  # no
         out = []
         for arg in args:
             val_type = self._get_value(arg)
@@ -490,14 +467,10 @@ class Interpreter(InterpreterBase):
 
     def _strtoint(self, args):
         if len(args) != 1:
-            super().error(
-                ErrorType.SYNTAX_ERROR, "Invalid strtoint call syntax", self.ip
-            )  # no
+            super().error(ErrorType.NAME_ERROR, "Invalid strtoint call syntax", self.ip)  # no
         value_type = self._get_value(args[0])
         if value_type.get_type() != Type.STRING:
-            super().error(
-                ErrorType.TYPE_ERROR, "Non-string passed to strtoint", self.ip
-            )  #!
+            super().error(ErrorType.TYPE_ERROR, "Non-string passed to strtoint", self.ip)  #!
         # self._set_value(
         #     InterpreterBase.RESULT_DEF,
         #     Value(Type.INT, False, int(value_type.get_value())),
@@ -565,9 +538,7 @@ class Interpreter(InterpreterBase):
     def _find_first_instruction(self, funcname):
         func_info = self.func_manager.get_function_info(funcname)
         if func_info == None:
-            super().error(
-                ErrorType.NAME_ERROR, f"Unable to locate {funcname} function", self.ip
-            )  #!
+            super().error(ErrorType.NAME_ERROR, f"Unable to locate {funcname} function", self.ip)  #!
         return func_info.start_ip
 
     # given a token name (e.g., x, 17, True, "foo"), give us a Value object associated with it
@@ -590,9 +561,7 @@ class Interpreter(InterpreterBase):
         #
         #
         if value == None:
-            super().error(
-                ErrorType.NAME_ERROR, f"Unknown variable {token}", self.ip
-            )  #!
+            super().error(ErrorType.NAME_ERROR, f"Unknown variable {token}", self.ip)  #!
         return value
 
     # given a variable name and a Value object, associate the name with the value
@@ -616,29 +585,17 @@ class Interpreter(InterpreterBase):
                 v1 = stack.pop()
                 v2 = stack.pop()
                 if v1.get_type() != v2.get_type():
-                    super().error(
-                        ErrorType.TYPE_ERROR,
-                        f"Mismatching types {v1.get_type()} and {v2.get_type()}",
-                        self.ip,
-                    )  #!
+                    super().error(ErrorType.TYPE_ERROR, f"Mismatching types {v1.get_type()} and {v2.get_type()}", self.ip)  #!
                 operations = self.binary_ops[v1.get_type()]
                 if token not in operations:
-                    super().error(
-                        ErrorType.TYPE_ERROR,
-                        f"Operator {token} is not compatible with {v1.get_type()}",
-                        self.ip,
-                    )  #!
+                    super().error(ErrorType.TYPE_ERROR, f"Operator {token} is not compatible with {v1.get_type()}", self.ip)  #!
 
                 stack.append(operations[token](v1, v2))
                 # print(stack)
             elif token == "!":
                 v1 = stack.pop()
                 if v1.get_type() != Type.BOOL:
-                    super().error(
-                        ErrorType.TYPE_ERROR,
-                        f"Expecting boolean for ! {v1.get_type()}",
-                        self.ip,
-                    )  #!
+                    super().error(ErrorType.TYPE_ERROR, f"Expecting boolean for ! {v1.get_type()}", self.ip)  #!
                 stack.append(Value(Type.BOOL, not v1.get_value()))
             else:
                 value_type = self._get_value(token)
@@ -772,81 +729,90 @@ class Interpreter(InterpreterBase):
                 break
 
     def check_function_args(self, func_name, args):
-        func_info = self.func_manager.get_function_info(func_name)
+        func_info = self.func_manager.get_function_info(func_name) 
 
         argument_objects = [self._get_value(arg) for arg in args]
 
-        if len(func_info.parameters) != len(args):
-            super().error(
-                ErrorType.NAME_ERROR, "Num of arguments does not match", self.ip
-            )
+        if func_info:
 
-        for i, arg_obj in enumerate(argument_objects):
-            _, arg_type = func_info.parameters[i]
-            # print(arg_obj.get_type())
-            # print(arg_type)
-            if arg_obj.get_type() % 3 != arg_type % 3:
-                super().error(ErrorType.TYPE_ERROR, "Types are not compatible", self.ip)
+            if len(func_info.parameters) != len(args):
+                super().error(ErrorType.NAME_ERROR, "Num of arguments does not match", self.ip)
 
-        argslist = []
-        argslist.append(func_name)
+            for i, arg_obj in enumerate(argument_objects):
+                _, arg_type = func_info.parameters[i]
+                # print(arg_obj.get_type())
+                # print(arg_type)
+                if arg_obj.get_type() % 3 != arg_type % 3:
+                    super().error(ErrorType.TYPE_ERROR, "Types are not compatible", self.ip)
 
-        current_scope = self.function_stack.get_current_function().get_current_scope()
+            argslist = []
+            argslist.append(func_name)
 
-        # whats passed into the funccall
-        for i, arg in enumerate(args):
-            arg_name, arg_type = func_info.parameters[i]
-            # print(arg_obj.get_type())
-            # print(arg_type)
+            current_scope = self.function_stack.get_current_function().get_current_scope()
 
-            # print(arg_name)
+            # whats passed into the funccall
+            for i, arg in enumerate(args):
+                arg_name, arg_type = func_info.parameters[i]
+                # print(arg_obj.get_type())
+                # print(arg_type)
 
-            if current_scope.has_defined(arg):
-                if arg_type < 4:
-                    argslist.append((Value(arg, False, arg_name), 1))
+                # print(arg_name)
+
+                if current_scope.has_defined(arg):
+                    if arg_type < 4:
+                        argslist.append((Value(arg, False, arg_name), 1))
+                    else:
+                        argslist.append((arg, 1))
                 else:
-                    argslist.append((arg, 1))
-            else:
-                if arg_type < 4:
-                    argslist.append((Value(arg, False, arg_name), 0))
-                else:
-                    argslist.append((arg, 0))
+                    if arg_type < 4:
+                        argslist.append((Value(arg, False, arg_name), 0))
+                    else:
+                        argslist.append((arg, 0))
 
-        current_scope_stack = self.function_stack.get_current_function()
+            current_scope_stack = self.function_stack.get_current_function()
 
-        current_scope_stack.append_arguments(argslist)
+            current_scope_stack.append_arguments(argslist)
 
         return
 
     def define_vars_for_args(self, func_name, args):
         current_scope = self.function_stack.get_current_function().get_current_scope()
 
-        params = self.func_manager.get_function_info(func_name).parameters
+        params = self.func_manager.get_function_info(func_name).parameters if self.func_manager.get_function_info(func_name) else []
+
+        seen = set()
 
         for i, param in enumerate(params):
             arg_name, arg_type = param
 
-            value_obj = current_scope.get(arg_name)
+            if arg_name in seen:
+                super().error(ErrorType.NAME_ERROR, f"dual definition of argument", self.ip)  #!
 
-            # if variable already defined in this scope
-            if value_obj and value_obj.defined_in_this_scope == True:
-                super().error(
-                    ErrorType.NAME_ERROR,
-                    f"Should not be happening. something very wrong",
-                    self.ip,
-                )  # no
+            seen.add(arg_name)
+
+            # value_obj = current_scope.get(arg_name)
+
+            # # if variable already defined in this scope
+            # if value_obj and value_obj.defined_in_this_scope == True:
+            #     super().error(
+            #         ErrorType.NAME_ERROR,
+            #         f"Should not be happening. something very wrong",
+            #         self.ip,
+            #     )  # no
 
             # if definition of unknown type
             # not tested
 
             # else not yet defined or shadowing
-            else:
-                self._set_value(
-                    arg_name, Value(args[i].get_type(), True, args[i].get_value())
-                )
+            # else:
+            self._set_value(
+                arg_name, Value(args[i].get_type(), True, args[i].get_value())
+            )
 
-                # new_value_object = self.create_default_object(arg_type)
-                # self._set_value(arg_name, new_value_object)
+
+
+            # new_value_object = self.create_default_object(arg_type)
+            # self._set_value(arg_name, new_value_object)
 
         return
 

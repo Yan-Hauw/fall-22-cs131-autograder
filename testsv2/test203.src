@@ -1,0 +1,7 @@
+func main
+ assign a 2
+ while > a 0
+  assign a - a 1
+ endwhile
+endfunc
+

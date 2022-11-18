@@ -132,6 +132,6 @@ dmypy.json
 .DS_Store
 
 # grader-specific files
-*v2*.py
+# *v2*.py
 *v3*.py
 results.json

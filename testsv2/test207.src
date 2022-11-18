@@ -1,0 +1,14 @@
+func foo a:refint b:refstring c:refbool void
+  return True
+endfunc
+
+
+func main void
+  var int a
+  var string b
+  var bool c
+  assign a 2
+  assign b "foo"
+  assign c True
+  funccall foo a b c
+endfunc

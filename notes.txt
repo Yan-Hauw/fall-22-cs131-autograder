@@ -1,61 +1,4 @@
 
-Implementing variable changes, definition and typing
-
-Existing data structure is a dictionary between name and value-type object
-Value type objects are created in the file itself
-
-Possible Solutions:
-1. Just don't create key-values in the variable mapping until there is a definition for it
-2. how to store that a variable has been defined? Probably a separate data structure. Do other requirements of this specification affect this? If yes, note it down but don't let it stop you from Implementing a partially correct program just to move forward first
-
-
-Separate data structure:
-key name
-value (has been defined or no, type)
-
-
-
-[1:30 PM, 11/5/2022] 90531574: Line numbers are unique, indentations are not, use line numbers to identify a scope
-[1:42 PM, 11/5/2022] 90531574: Line numbers to remember a scope. Use indentation to know that you have reached a new scope
-[1:43 PM, 11/5/2022] 90531574: Use some kind of for loop searching to find the last line of a certain scope
-[1:46 PM, 11/5/2022] 90531574: This works because deeper indentation must correspond to entering a new scope and shallower indentation must correspond to leaving a scope
-[1:51 PM, 11/5/2022] 90531574: If we make an outside function call, then no variables remain, so it is the same as leaving a scope
-[1:52 PM, 11/5/2022] 90531574: If we return from an outside function call to some other scope, it would always mean move from shallow to deep indentation as well
-
-
-
-It doesn't matter whether we loop through first and find all the scopes or add as we go
-
-Key state we need to remember:
-1.At any point in time, what scope are we in
-2.At any point in time, what is the enclosing scope we are in
-
-We have a dictionary that tells us what scope is any specific line. There's no diff between continuously looking for it and storing it
-
-
-
-A stack for scopes
-
-This is just a list
-we keep appending more scopes to this list. It's very easy to access the 2nd last element of this list as the enclosing scope
-
-
-
-
-A function for knowing what variables can be accessed in a certain scope
-
-We don't need to loop through the whole scope stack, we just need to use the variables of the most recent scope on the scope stack
-
-A scope stack should be tied to each function call, because we could possibly visit a function again in the event of mutual recursion
-
-
-
-Data structure used to store the variables for a certain scope (for all scopes) has to be unique to each function call, because we need to change it for different calls of the same function
-Could have a dictionary or a list of tuples, doesn't matter at this point
-We not only need to store the value of each variable in every scope but also the type of each variable in every scope
-
-
-
 
 
 Need a lot more functionality on how to use this data structure:
@@ -72,11 +15,6 @@ Every time we return from the function call, we pop the whole list of tuples, ev
 
 
 
-Function called when entering a new scope
-We need to create the new data structure that corresponds to this scope
-1.2.At the start of every scope, we just use the variables of the previous scope. But the moment we redefine or reassign a variable, we need to call the propagating function
-
-Function called when leaving a scope, just delete the data structure that corresponds to this scope
 
 
 Need a function to propagate result from one function to the calling function
@@ -85,7 +23,6 @@ Need a function to propagate result from one function to the calling function
 
 
 
-Sounds like best to be a dictionary, so we don't have to loop through
 
 
 Need a propagating function for propagating return values, regardless of which nested scope within the function the return statement is called from
@@ -97,16 +34,16 @@ Need a propagating function for propagating return values, regardless of which n
 
 
 
-Dealing with variables
-
-Need to make a mark in a scope for a specific variable, if this variable was defined in that scope
-We need to go into the exact scope of this big data structure that we are managing, and make a mark there that we defined/redefined this variable here, NOTE: we need to replace the whole tuple
-No need to differentiate between first definition and shadowing
 
 
 
 Defining variables in parameters
 We just basically need to create 3 more types for the reference parameters and we only create variables of these types when entering a new function
+Expression and Assignment changes
+Need to update all expression evaluation to allow for the ref-* type variables
+Need to update all assignment functions to allow for the ref-* type variables
+Defining variables:
+If a variable is in a scope it has been defined, if its not in a scope, it hasn't been defined
 
 
 
@@ -116,50 +53,10 @@ Just use a general propagating function. The moment a value is updated propagate
 
 
 
-How to deal with creating a new scope when calling an external function with parameters
-Its about the same, just that if a function has parameters, then before we start executing, we have to define the arguments as variables in the scope
-
 
 
 Return values - Now we actually have to return values as well
 Function for returning values: 
 Call some kind of variant of the propagate function, to proparagate the return values, and then destroy the scope of the function being returned from, NOTE: for scope we go through, we need to add the corresponding result value
 To check that return type is same as function return type, just search for the first statement again and check the last word
-
-
-
-
-Expression and Assignment changes
-
-Need to update all expression evaluation to allow for the ref-* type variables
-
-Need to update all assignment functions to allow for the ref-* type variables
-
-
-
-Defining variables:
-
-If a variable is in a scope it has been defined, if its not in a scope, it hasn't been defined
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

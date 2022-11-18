@@ -1,0 +1,18 @@
+func f x:refint y:refstring z:refbool void
+ var bool y
+endfunc
+
+func main
+ var int a
+ var string b
+ var bool c
+ assign a 1
+ assign b "ty"
+ assign c True
+ if True
+  funccall f a b c
+ endif
+ assign a 8
+ assign b "ml"
+ assign a True
+endfunc

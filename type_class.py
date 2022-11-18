@@ -8,4 +8,4 @@ class Type(IntEnum):
     REFINT = 4
     REFBOOL = 5
     REFSTRING = 6
-    NONE = 7
+    NONE = -1
