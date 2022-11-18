@@ -131,14 +131,11 @@ dmypy.json
 # macOS (shakes fist)
 .DS_Store
 
-<<<<<<< HEAD
 # grader-specific files
 # *v2*.py
-=======
 # project-specific files - students, feel free to remove these for yourself!
 # *v1*.py
 # *v2*.py
->>>>>>> 666bfc65be52a1293ed2192622491f9b3bdd3d7d
 # *v3*.py
 tokenize.py
 results.json
