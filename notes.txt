@@ -1,6 +1,88 @@
 
 
+What must function variables be able to do?
 
+1.Be assigned, defined, returned, passed as parameters to functions, 
+2.be used as the reference to a function name in a funccall, 
+3.have the result variable that the function is returned in behave in the same way as the other result variables
+
+
+
+What about lambdas?
+
+1.Must be defined inside other functions or nested in lambdas
+2.Must create closures and store the closure into the resultf variable
+3.Capture values in free variables
+4.Inherit all variables from enclosing environments by value
+5.Must be able to shadow variables (same functionality as before) (nothing to implement here upon inspection)
+
+
+
+What about nested lambdas?
+
+Only differences from non-nested lambdas are that they
+1.Inherit variables from parent lambdas (this may not have any additional meaning)
+
+
+
+Don't treat lambdas and functions as the same thing yet, implement them both first, then if you have time and if they are similar enough you can merge them
+
+
+
+
+
+What must object variables be able to do?
+
+1.Be assigned, defined, be returned by object reference, 
+2.When being assigned to object variables, have the object reference being copied only, with no deep copy made
+3.be passed as parameters to functions by object reference, 
+4.be returned by object reference
+5.have the result variable that the object is returned in behave in the same way as the other result variables
+
+Contain member variables and parameters
+
+
+
+What must object member variables be able to do?
+
+1.Be set and accessed using dot notation
+2.Be assigned to functions through the function's name or a variable that contains that function
+3.Have their type changed during assignment (can just replace the value_object tied to each member variable)
+4.Be used in expressions (need to change expressions code)
+5.Contain other objects
+
+
+
+What must object methods be able to do?
+
+1.Call the function being pointed to using dot notation
+2.Add a "this" variable to the outermost scope of the function being called
+
+I think we can simply implement object methods as pointers to functions
+
+
+
+Something new about functions:
+1.Can contain a "this" variable in a function's lines of code 
+
+
+
+
+
+I can't think of an example where we would need to call/access the closure for a nested lambda before having actually called the closure for the outer lambda
+
+Perhaps this example makes the question more clear:
+
+func main void
+  lambda a1:int func #lambda 1
+    lambda a2:int func # lambda 2
+    endlambda
+  endlambda
+
+  # when the interpreter is at this line, there's no way that we could have created a closure for lambda 2 by this point right?
+
+  funccall resultf # the place where we first call lambda 1's closure
+endfunc
 
 
 

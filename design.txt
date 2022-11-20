@@ -1,0 +1,103 @@
+
+
+
+Function variables
+
+Represented by function objects: Value(Type.func, name)
+
+Can have names that point to specifically declared functions, these names are strings
+When function variable is defined, we just have the value point to None
+When returned, we can just have resultf be a function object whose value points to the name of some function
+
+The above scheme works with references in a funccall and with the resultf variable as well
+Can always propagate resultf to the top scope even if it's just a function_object with a name
+
+
+
+Closures
+
+Represented by closure objects: Value(Type.func, (first-line, {varname: value_object, # and so on for more variables}))
+
+Differences from normal functions and function variables:
+1.Capture values in free variables
+2.We don't have a name for the function, so we must find some other way to jump to it
+
+Note: there is no such thing as defining a lambda, we only create closures for lambdas
+
+Inner scopes of a lambda don't change variable capturing in outer scopes of a lambda
+Key idea: At the point we call a specific lambda, we don't have to think about whether we're defining/calling a child lambda yet
+We have to store what variables are inherited from the scope that is outside the lambda together with the closure for a lambda function
+We only capture values in free variables whenever we call a closure (and at the same time apply the variables inherited from the scope that the lambda was initially in)
+
+
+
+When specifically do we create the closure for a nested lambda function?
+
+Based on page 11 of the spec, we create the closure for a child lambda function only when executing the closure of a parent function
+
+
+Entering a closure:
+
+Certain things need to be done
+Implement enter_closure function, similar to entering a function scope just with some differences, better to modify existing code
+
+Leaving a closure:
+
+Certain things need to be done
+Implement leave_closure function, similar to leaving a function scope with a few differences, better to modify existing code
+
+
+
+
+
+
+Clarify what is object reference
+
+An object reference is basically a pointer to an object. 
+
+
+
+
+Object variables
+
+Represented by obj_objects: Value(Type.Object, number)
+
+We have a separate dictionary creating a mapping from numbers to objects
+{
+    num1: {varname1: value_object, varname2: function_object or closure_object, varname3: obj_object}
+    num2: {varname1: value_object, varname2: function_object or closure_object, varname3: obj_object}
+}
+
+The obj-object should be able to support all object variable functionality. 
+The nested obj-object (pointers to other objects) should be able to support all object member variable functionality. 
+
+
+object methods
+
+Need some additional way to indicate whether or not we called a function using dot syntax:
+We just do this based on the syntax of the name of the funccall, we have to make a way to differentiate object member accesses/set/parameter-passing and the use of normal variables anyways
+Using this syntax, we can call create_new_environment based on different flags
+
+
+
+What should we able to do to an object that is a member variable of a parent object?
+Same question: What can we do to objects
+Need to be able to create an object reference to the object that is a member variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
