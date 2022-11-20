@@ -60,7 +60,7 @@ class FunctionManager:
                 reset_after_this_line = True
 
             self.return_types.append(
-                return_type_stack[-1]
+                return_type_stack[-1]  # including the endfunc line
             )  # each line in the program is assigned a return type based on
             # the function it's associated with; use this to look up valid type
             # for each return

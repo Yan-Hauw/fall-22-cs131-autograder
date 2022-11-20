@@ -96,8 +96,10 @@ class Interpreter(InterpreterBase):
         if len(tokens) < 2:
             super().error(ErrorType.SYNTAX_ERROR, "Invalid assignment statement")
         vname = tokens[0]
-        value_type = self._eval_expression(tokens[1:])
-        existing_value_type = self._get_value(tokens[0])
+        value_type = self._eval_expression(
+            tokens[1:]
+        )  # for value we're trying to assign to the variable
+        existing_value_type = self._get_value(tokens[0])  # for a variable
         if existing_value_type.type() != value_type.type():
             super().error(
                 ErrorType.TYPE_ERROR,
@@ -147,7 +149,7 @@ class Interpreter(InterpreterBase):
         for formal, actual in zip(formal_params.params, args):
             formal_name = formal[0]
             formal_typename = formal[1]
-            arg = self._get_value(actual)
+            arg = self._get_value(actual)  # arg is a value object
             if arg.type() != self.compatible_types[formal_typename]:
                 super().error(
                     ErrorType.TYPE_ERROR,
@@ -162,7 +164,9 @@ class Interpreter(InterpreterBase):
         # create a new environment for the target function
         # and add our parameters to the env
         self.env_manager.push()
-        self.env_manager.import_mappings(tmp_mappings)
+        self.env_manager.import_mappings(
+            tmp_mappings
+        )  # put variables from parent function scope in first block scope of function
 
     def _endfunc(self, return_val=None):
         if not self.return_stack:  # done with main!
@@ -170,15 +174,17 @@ class Interpreter(InterpreterBase):
         else:
             self.env_manager.pop()  # get rid of environment for the function
             if return_val:
-                self._set_result(return_val)
+                self._set_result(return_val)  # return_val must be a value object
             else:
-                # return default value for type if no return value is specified. Last param of True enables
-                # creation of result variable even if none exists, or is of a different type
+                # return default value for type if no return value is specified. Last param of True of create_new_symbol function enables
+                # creation of result variable even if none exists, or is of a different type (this shouldn't be a problem because its by name)
                 return_type = self.func_manager.get_return_type_for_enclosing_function(
                     self.ip
                 )
                 if return_type != InterpreterBase.VOID_DEF:
-                    self._set_result(self.type_to_default[return_type])
+                    self._set_result(
+                        self.type_to_default[return_type]
+                    )  # typetodefault returns a value object
             self.ip = self.return_stack.pop()
 
     def _if(self, args):

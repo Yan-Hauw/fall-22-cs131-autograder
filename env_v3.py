@@ -11,17 +11,17 @@ class SymbolResult(Enum):
 # (so variables can go out of scope once a block enters/exits).
 # The internal data structure is essentially a stack (via a python list) of environments
 # where each environment on the stack is a list of one or more dictionaries that map a
-# variable name to a type/value. We need more than one dictionary to accomodate nested
-# blocks in functions.
+# variable name to a type/value. We need more than one dictionary in each environment to
+# accomodate nested blocks in functions.
 # If f() calls g() calls h() then while we're in function h, our stack would have
-# three items on it: [[{dictionary for f}],[{dictionary for g}][{dictionary for h}]]
+# three items on it: [[{dictionary for f}],[{dictionary for g}],[{dictionary for h}]]
 class EnvironmentManager:
     def __init__(self):
         self.environment = [[{}]]
 
     def get(self, symbol):
         nested_envs = self.environment[-1]
-        for env in reversed(nested_envs):
+        for env in reversed(nested_envs):  # env is a dictionary representing a scope
             if symbol in env:
                 return env[symbol]
 
@@ -31,7 +31,9 @@ class EnvironmentManager:
     # the symbol already exists
     def create_new_symbol(self, symbol, create_in_top_block=False):
         block_index = 0 if create_in_top_block else -1
-        if symbol not in self.environment[-1][block_index]:
+        if (
+            symbol not in self.environment[-1][block_index]
+        ):  # zeroth or last index of the function scope depending on arg
             self.environment[-1][block_index][symbol] = None
             return SymbolResult.OK
 
