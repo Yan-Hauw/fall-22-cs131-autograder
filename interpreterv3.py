@@ -1,7 +1,7 @@
 import copy
 from enum import Enum
-from env_v2 import EnvironmentManager, SymbolResult
-from func_v2 import FunctionManager
+from env_v3 import EnvironmentManager, SymbolResult
+from func_v3 import FunctionManager
 from intbase import InterpreterBase, ErrorType
 from tokenize import Tokenizer
 
@@ -11,6 +11,7 @@ class Type(Enum):
     BOOL = 2
     STRING = 3
     VOID = 4
+    FUNC = 5
 
 
 # Represents a value, which has a type and its value
@@ -53,7 +54,9 @@ class Interpreter(InterpreterBase):
 
         # main interpreter run loop
         while not self.terminate:
+            print(self.ip)
             self._process_line()
+            self.env_manager.output_environment()
 
     def _process_line(self):
         if self.trace_output:
@@ -125,10 +128,24 @@ class Interpreter(InterpreterBase):
             self._advance_to_next_statement()
         else:
             self.return_stack.append(self.ip + 1)
+            called_func_object = self._get_value(args[0])
+            # converted_args = []
+            # for arg in args[1:]:
+            #     obj = self._get_value(arg)
+            #     if self.func_manager.is_function(obj.value()):
+            #         if type(obj.value()) == int:  # closure
+            #             super().error(ErrorType.NAME_ERROR, f"Closure", self.ip)
+            #         else:  # known function
+            #             converted_args.append(obj.value())
+            #     else:
+            #         converted_args.append(arg)
+
+            # print(converted_args)
+
             self._create_new_environment(
-                args[0], args[1:]
+                called_func_object.value(), args[1:]
             )  # Create new environment, copy args into new env
-            self.ip = self._find_first_instruction(args[0])
+            self.ip = self._find_first_instruction(called_func_object.value())
 
     # create a new environment for a function call
     def _create_new_environment(self, funcname, args):
@@ -149,7 +166,13 @@ class Interpreter(InterpreterBase):
         for formal, actual in zip(formal_params.params, args):
             formal_name = formal[0]
             formal_typename = formal[1]
+
+            print(actual)
+
             arg = self._get_value(actual)  # arg is a value object
+
+            print(formal_name, formal_typename, (arg.type(), arg.value()))
+
             if arg.type() != self.compatible_types[formal_typename]:
                 super().error(
                     ErrorType.TYPE_ERROR,
@@ -253,7 +276,9 @@ class Interpreter(InterpreterBase):
             return
 
         # otherwise evaluate the expression and return its value
+
         value_type = self._eval_expression(args)
+
         if value_type.type() != default_value_type.type():
             super().error(ErrorType.TYPE_ERROR, "Non-matching return type", self.ip)
         self._endfunc(value_type)
@@ -374,6 +399,7 @@ class Interpreter(InterpreterBase):
         self.type_to_default[InterpreterBase.STRING_DEF] = Value(Type.STRING, "")
         self.type_to_default[InterpreterBase.BOOL_DEF] = Value(Type.BOOL, False)
         self.type_to_default[InterpreterBase.VOID_DEF] = Value(Type.VOID, None)
+        self.type_to_default[InterpreterBase.FUNC_DEF] = Value(Type.FUNC, None)
 
         # set up what types are compatible with what other types
         self.compatible_types = {}
@@ -383,6 +409,7 @@ class Interpreter(InterpreterBase):
         self.compatible_types[InterpreterBase.REFINT_DEF] = Type.INT
         self.compatible_types[InterpreterBase.REFSTRING_DEF] = Type.STRING
         self.compatible_types[InterpreterBase.REFBOOL_DEF] = Type.BOOL
+        self.compatible_types[InterpreterBase.FUNC_DEF] = Type.FUNC
         self.reference_types = {
             InterpreterBase.REFINT_DEF,
             Interpreter.REFSTRING_DEF,
@@ -394,6 +421,7 @@ class Interpreter(InterpreterBase):
         self.type_to_result[Type.INT] = "i"
         self.type_to_result[Type.STRING] = "s"
         self.type_to_result[Type.BOOL] = "b"
+        self.type_to_result[Type.FUNC] = "f"
 
     # run a program, provided in an array of strings, one string per line of source code
     def _setup_operations(self):
@@ -465,10 +493,17 @@ class Interpreter(InterpreterBase):
         if token == InterpreterBase.TRUE_DEF or token == Interpreter.FALSE_DEF:
             return Value(Type.BOOL, token == InterpreterBase.TRUE_DEF)
 
-        # look in environments for variable
+        # function variables use this
+        # function names themselves dont use this
         val = self.env_manager.get(token)
         if val != None:
+            # print((val.type(), val.value()))
             return val
+
+        # for now, only supporting known functions
+        if self.func_manager.is_function(token):
+            return Value(Type.FUNC, token)
+
         # not found
         super().error(ErrorType.NAME_ERROR, f"Unknown variable {token}", self.ip)
 
