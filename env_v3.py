@@ -19,6 +19,17 @@ class EnvironmentManager:
     def __init__(self):
         self.environment = [[{}]]
 
+    def output_environment(self):
+        print(
+            [
+                [
+                    {vname: (o.type(), o.value()) for vname, o in scope.items()}
+                    for scope in scope_list
+                ]
+                for scope_list in self.environment
+            ]
+        )
+
     def get(self, symbol):
         nested_envs = self.environment[-1]
         for env in reversed(nested_envs):  # env is a dictionary representing a scope
