@@ -16,7 +16,10 @@ Can always propagate resultf to the top scope even if it's just a function_objec
 
 Closures
 
-Represented by closure objects: Value(Type.func, (first-line, {varname: value_object, # and so on for more variables}))
+This how function variables that are tied to closures look:
+Value(Type.func, number tied to a specific closure)
+
+This is how closure objects look in the dictionary for closures: Value(Type.func, (first-line, {varname: value_object, # and so on for more variables}))
 
 Differences from normal functions and function variables:
 1.Capture values in free variables
@@ -82,7 +85,7 @@ Using this syntax, we can call create_new_environment based on different flags
 
 What should we able to do to an object that is a member variable of a parent object?
 Same question: What can we do to objects
-Need to be able to create an object reference to the object that is a member variable
+Need to be able to create an object reference to the object that is a member variable: Aside from this, all seems to be same
 
 
 

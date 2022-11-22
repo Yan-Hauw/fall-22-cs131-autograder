@@ -13,7 +13,7 @@ What about lambdas?
 1.Must be defined inside other functions or nested in lambdas
 2.Must create closures and store the closure into the resultf variable
 3.Capture values in free variables
-4.Inherit all variables from enclosing environments by value
+4.Inherit all variables from enclosing environments by value - also implemented by value for captured variables
 5.Must be able to shadow variables (same functionality as before) (nothing to implement here upon inspection)
 
 
@@ -21,11 +21,27 @@ What about lambdas?
 What about nested lambdas?
 
 Only differences from non-nested lambdas are that they
-1.Inherit variables from parent lambdas (this may not have any additional meaning)
+1.Inherit variables from parent lambdas (this may not have any additional meaning) - everything is the same
 
 
 
 Don't treat lambdas and functions as the same thing yet, implement them both first, then if you have time and if they are similar enough you can merge them
+
+
+How to have multiple closures for the same lambda function:
+
+Currently the only thing unique about a closure is that it has a dictionary of captured variables
+And a single lambda function can only have one dictionary
+
+This can be expanded to every lambda function having a dictionary of closures like:
+
+{
+  cn1: {closure},
+  cn2: {closure}
+}
+
+Even if we added objects to our current closures it would not be a problem as long the implementation for objects is not tied to any data structure beyond the dictionary belonging to each closure
+
 
 
 
