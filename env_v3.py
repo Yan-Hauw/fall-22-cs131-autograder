@@ -1,4 +1,5 @@
 from enum import Enum
+import copy
 
 
 class SymbolResult(Enum):
@@ -49,6 +50,17 @@ class EnvironmentManager:
             return SymbolResult.OK
 
         return SymbolResult.ERROR
+
+    def get_captured_vars(self):
+        captured_vars = {}
+        nested_envs = self.environment[-1]
+        seen = set()
+        for block_scope in reversed(nested_envs):
+            for varname, value_obj in block_scope.items():
+                if varname in seen:
+                    continue
+                captured_vars[varname] = copy.deepcopy(value_obj)
+        return captured_vars
 
     # set works with symbols that were already created
     # it won't create a new symbol, only update it

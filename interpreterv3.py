@@ -51,12 +51,19 @@ class Interpreter(InterpreterBase):
         self.return_stack = []
         self.terminate = False
         self.env_manager = EnvironmentManager()  # used to track variables/scope
+        self.closures = {}
+        self.current_closure = 1
+
+        # print(self.func_manager.func_cache)
+        # print(self.func_manager.return_types)
+        self.func_manager.output_info()
 
         # main interpreter run loop
         while not self.terminate:
             print(self.ip)
             self._process_line()
             self.env_manager.output_environment()
+            self.func_manager.output_info()
 
     def _process_line(self):
         if self.trace_output:
@@ -89,6 +96,10 @@ class Interpreter(InterpreterBase):
                 self._endwhile(args)
             case InterpreterBase.VAR_DEF:  # v2 statements
                 self._define_var(args)
+            case InterpreterBase.LAMBDA_DEF:
+                self._create_closure(args)
+            case InterpreterBase.ENDLAMBDA_DEF:
+                self._endfunc()
             case default:
                 raise Exception(f"Unknown command: {tokens[0]}")
 
@@ -147,6 +158,30 @@ class Interpreter(InterpreterBase):
             )  # Create new environment, copy args into new env
             self.ip = self._find_first_instruction(called_func_object.value())
 
+    def _create_closure(self, args):
+
+        lambda_name = self.func_manager.create_lambda_name(self.ip + 1)
+
+        lambda_info = self.func_manager.func_cache[lambda_name]
+
+        lambda_info.closure = self.env_manager.get_captured_vars()
+        # now variables of closure are stored in func_cache
+
+        self._set_result(Value(Type.FUNC, lambda_name))
+
+        # jump to after endlambda
+        for line_num in range(self.ip + 1, len(self.tokenized_program)):
+            tokens = self.tokenized_program[line_num]
+            if not tokens:
+                continue
+            if (
+                tokens[0] == InterpreterBase.ENDLAMBDA_DEF
+                and self.indents[self.ip] == self.indents[line_num]
+            ):
+                self.ip = line_num + 1
+                return
+        super().error(ErrorType.SYNTAX_ERROR, "Missing endlambda", self.ip)
+
     # create a new environment for a function call
     def _create_new_environment(self, funcname, args):
         formal_params = self.func_manager.get_function_info(funcname)
@@ -162,7 +197,20 @@ class Interpreter(InterpreterBase):
                 self.ip,
             )
 
+        # for handling captured variables
+        captured_vars = copy.deepcopy(formal_params.closure)
+
+        # create a new environment for the target function
+        self.env_manager.push()
+
+        # add captured variables to the env
+        self.env_manager.import_mappings(captured_vars)
+
+        is_lambda = funcname[:7] == "lambda:"
+
         tmp_mappings = {}
+        # this for loop just creates the tmp-mappings dictionary
+        # for handling parameters
         for formal, actual in zip(formal_params.params, args):
             formal_name = formal[0]
             formal_typename = formal[1]
@@ -180,13 +228,15 @@ class Interpreter(InterpreterBase):
                     self.ip,
                 )
             if formal_typename in self.reference_types:
-                tmp_mappings[formal_name] = arg
+                if is_lambda:
+                    tmp_mappings[formal_name] = copy.copy(arg)
+                else:
+                    tmp_mappings[formal_name] = arg
             else:
+                # be careful
                 tmp_mappings[formal_name] = copy.copy(arg)
 
-        # create a new environment for the target function
-        # and add our parameters to the env
-        self.env_manager.push()
+        # add our parameters to the env
         self.env_manager.import_mappings(
             tmp_mappings
         )  # put variables from parent function scope in first block scope of function
