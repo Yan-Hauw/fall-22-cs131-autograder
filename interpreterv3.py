@@ -138,8 +138,22 @@ class Interpreter(InterpreterBase):
             self._strtoint(args[1:])
             self._advance_to_next_statement()
         else:
-            self.return_stack.append(self.ip + 1)
             called_func_object = self._get_value(args[0])
+            if (
+                called_func_object.value() is None
+                and called_func_object.type() == Type.FUNC
+            ):
+                print("yay")
+                self.ip += 1
+                return
+            self.return_stack.append(self.ip + 1)
+            if called_func_object.type() != Type.FUNC:
+                super().error(
+                    ErrorType.TYPE_ERROR,
+                    f"funccall with non-function type variable",
+                    self.ip,
+                )
+
             # converted_args = []
             # for arg in args[1:]:
             #     obj = self._get_value(arg)
@@ -200,12 +214,6 @@ class Interpreter(InterpreterBase):
         # for handling captured variables
         captured_vars = copy.deepcopy(formal_params.closure)
 
-        # create a new environment for the target function
-        self.env_manager.push()
-
-        # add captured variables to the env
-        self.env_manager.import_mappings(captured_vars)
-
         is_lambda = funcname[:7] == "lambda:"
 
         tmp_mappings = {}
@@ -229,12 +237,18 @@ class Interpreter(InterpreterBase):
                 )
             if formal_typename in self.reference_types:
                 if is_lambda:
-                    tmp_mappings[formal_name] = copy.copy(arg)
+                    tmp_mappings[formal_name] = copy.copy(arg)  # change for objects
                 else:
                     tmp_mappings[formal_name] = arg
             else:
                 # be careful
-                tmp_mappings[formal_name] = copy.copy(arg)
+                tmp_mappings[formal_name] = copy.copy(arg)  # change for objects
+
+        # create a new environment for the target function
+        self.env_manager.push()
+
+        # add captured variables to the env
+        self.env_manager.import_mappings(captured_vars)
 
         # add our parameters to the env
         self.env_manager.import_mappings(
@@ -402,7 +416,9 @@ class Interpreter(InterpreterBase):
             if args[0] not in self.type_to_default:
                 super().error(ErrorType.TYPE_ERROR, f"Invalid type {args[0]}", self.ip)
             # Create the variable with a copy of the default value for the type
-            self.env_manager.set(var_name, copy.copy(self.type_to_default[args[0]]))
+            self.env_manager.set(
+                var_name, copy.copy(self.type_to_default[args[0]])
+            )  # change for objects
 
         self._advance_to_next_statement()
 
@@ -576,7 +592,7 @@ class Interpreter(InterpreterBase):
         self.env_manager.create_new_symbol(
             result_var, True
         )  # create in top block if it doesn't exist
-        self.env_manager.set(result_var, copy.copy(value_type))
+        self.env_manager.set(result_var, copy.copy(value_type))  # change for object
 
     # evaluate expressions in prefix notation: + 5 * 6 x
     def _eval_expression(self, tokens):
