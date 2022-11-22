@@ -60,6 +60,7 @@ class EnvironmentManager:
                 if varname in seen:
                     continue
                 captured_vars[varname] = copy.deepcopy(value_obj)
+                seen.add(varname)
         return captured_vars
 
     # set works with symbols that were already created
