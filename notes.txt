@@ -82,29 +82,3 @@ Something new about functions:
 1.Can contain a "this" variable in a function's lines of code 
 
 
-
-
-
-I can't think of an example where we would need to call/access the closure for a nested lambda before having actually called the closure for the outer lambda
-
-Perhaps this example makes the question more clear:
-
-func main void
-  lambda a1:int func #lambda 1
-    lambda a2:int func # lambda 2
-    endlambda
-  endlambda
-
-  # when the interpreter is at this line, there's no way that we could have created a closure for lambda 2 by this point right?
-
-  funccall resultf # the place where we first call lambda 1's closure
-endfunc
-
-
-
-
-
-
-
-
-
