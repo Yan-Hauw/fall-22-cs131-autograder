@@ -7,7 +7,11 @@ class FuncInfo:
             params  # format is [[varname1,typename1],[varname2,typename2],...]
         )
         self.start_ip = start_ip  # line number, zero-based
-        self.closure = {}
+        self.closures = {}
+        self.next_closure_num = 1
+
+    def inc_closure_num(self):
+        self.next_closure_num += 1
 
 
 class FunctionManager:
@@ -23,8 +27,11 @@ class FunctionManager:
                     info.params,
                     info.start_ip,
                     {
-                        varname: (obj.type(), obj.value())
-                        for varname, obj in info.closure.items()
+                        closure_num: {
+                            varname: (obj.type(), obj.value(), obj.get_closure_num())
+                            for varname, obj in closure.items()
+                        }
+                        for closure_num, closure in info.closures.items()
                     },
                 )
                 for funcname, info in self.func_cache.items()

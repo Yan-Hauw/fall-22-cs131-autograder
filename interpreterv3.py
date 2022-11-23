@@ -17,9 +17,13 @@ class Type(Enum):
 
 # Represents a value, which has a type and its value
 class Value:
-    def __init__(self, type, value=None):
+    def __init__(self, type, value=None, closure_num=None):
         self.t = type
         self.v = value
+        self.closure_num = closure_num
+
+    def get_closure_num(self):
+        return self.closure_num
 
     def value(self):
         return self.v
@@ -27,6 +31,7 @@ class Value:
     def set(self, other):
         self.t = other.t
         self.v = other.v
+        self.closure_num = other.closure_num
 
     def type(self):
         return self.t
@@ -65,14 +70,14 @@ class Interpreter(InterpreterBase):
             print(self.ip)
             self._process_line()
             self.env_manager.output_environment()
-            self._print_objects()
+            # self._print_objects()
             self.func_manager.output_info()
 
     def _print_objects(self):
         print(
             {
                 k: {
-                    member: (val_obj.type(), val_obj.value())
+                    member: (val_obj.type(), val_obj.value(), val_obj.get_closure_num())
                     for member, val_obj in v.items()
                 }
                 for k, v in self.objects.items()
@@ -205,7 +210,11 @@ class Interpreter(InterpreterBase):
             this_var = args[0].split(".")[0] if dot_method else None
 
             self._create_new_environment(
-                called_func_object.value(), args[1:], this_var, dot_method
+                called_func_object.value(),
+                called_func_object.get_closure_num(),
+                args[1:],
+                this_var,
+                dot_method,
             )  # Create new environment, copy args into new env
             self.ip = self._find_first_instruction(called_func_object.value())
 
@@ -215,10 +224,12 @@ class Interpreter(InterpreterBase):
 
         lambda_info = self.func_manager.func_cache[lambda_name]
 
-        lambda_info.closure = self._get_captured_vars()
+        lambda_info.closures[lambda_info.next_closure_num] = self._get_captured_vars()
         # now variables of closure are stored in func_cache
 
-        self._set_result(Value(Type.FUNC, lambda_name))
+        self._set_result(Value(Type.FUNC, lambda_name, lambda_info.next_closure_num))
+
+        lambda_info.inc_closure_num()
 
         # jump to after endlambda
         for line_num in range(self.ip + 1, len(self.tokenized_program)):
@@ -253,7 +264,9 @@ class Interpreter(InterpreterBase):
         return captured_vars
 
     # create a new environment for a function call
-    def _create_new_environment(self, funcname, args, this_var=None, dot_method=False):
+    def _create_new_environment(
+        self, funcname, closure_num, args, this_var=None, dot_method=False
+    ):
         formal_params = self.func_manager.get_function_info(funcname)
         if formal_params is None:
             super().error(
@@ -268,7 +281,11 @@ class Interpreter(InterpreterBase):
             )
 
         # for handling captured variables
-        captured_vars = copy.deepcopy(formal_params.closure)
+        captured_vars = (
+            copy.deepcopy(formal_params.closures[closure_num])
+            if closure_num is not None
+            else {}
+        )
 
         is_lambda = funcname[:7] == "lambda:"
 

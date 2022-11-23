@@ -24,7 +24,10 @@ class EnvironmentManager:
         print(
             [
                 [
-                    {vname: (o.type(), o.value()) for vname, o in scope.items()}
+                    {
+                        vname: (o.type(), o.value(), o.get_closure_num())
+                        for vname, o in scope.items()
+                    }
                     for scope in scope_list
                 ]
                 for scope_list in self.environment
