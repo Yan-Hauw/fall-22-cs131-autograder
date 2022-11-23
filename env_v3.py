@@ -51,17 +51,20 @@ class EnvironmentManager:
 
         return SymbolResult.ERROR
 
-    def get_captured_vars(self):
-        captured_vars = {}
-        nested_envs = self.environment[-1]
-        seen = set()
-        for block_scope in reversed(nested_envs):
-            for varname, value_obj in block_scope.items():
-                if varname in seen:
-                    continue
-                captured_vars[varname] = copy.deepcopy(value_obj)
-                seen.add(varname)
-        return captured_vars
+    def get_curr_func_scope(self):
+        return self.environment[-1]
+
+    # def get_captured_vars(self):
+    #     captured_vars = {}
+    #     nested_envs = self.environment[-1]
+    #     seen = set()
+    #     for block_scope in reversed(nested_envs):
+    #         for varname, value_obj in block_scope.items():
+    #             if varname in seen:
+    #                 continue
+    #             captured_vars[varname] = copy.deepcopy(value_obj)
+    #             seen.add(varname)
+    #     return captured_vars
 
     # set works with symbols that were already created
     # it won't create a new symbol, only update it

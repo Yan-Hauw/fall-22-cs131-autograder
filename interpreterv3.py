@@ -12,6 +12,7 @@ class Type(Enum):
     STRING = 3
     VOID = 4
     FUNC = 5
+    OBJECT = 6
 
 
 # Represents a value, which has a type and its value
@@ -51,19 +52,32 @@ class Interpreter(InterpreterBase):
         self.return_stack = []
         self.terminate = False
         self.env_manager = EnvironmentManager()  # used to track variables/scope
-        self.closures = {}
-        self.current_closure = 1
+        self.objects = {0: {}}
+        self.next_obj_ref = 1
 
         # print(self.func_manager.func_cache)
         # print(self.func_manager.return_types)
-        self.func_manager.output_info()
+        # self.func_manager.output_info()
+        print(self.tokenized_program)
 
         # main interpreter run loop
         while not self.terminate:
             print(self.ip)
             self._process_line()
             self.env_manager.output_environment()
+            self._print_objects()
             self.func_manager.output_info()
+
+    def _print_objects(self):
+        print(
+            {
+                k: {
+                    member: (val_obj.type(), val_obj.value())
+                    for member, val_obj in v.items()
+                }
+                for k, v in self.objects.items()
+            }
+        )
 
     def _process_line(self):
         if self.trace_output:
@@ -113,14 +127,34 @@ class Interpreter(InterpreterBase):
         value_type = self._eval_expression(
             tokens[1:]
         )  # for value we're trying to assign to the variable
-        existing_value_type = self._get_value(tokens[0])  # for a variable
-        if existing_value_type.type() != value_type.type():
-            super().error(
-                ErrorType.TYPE_ERROR,
-                f"Trying to assign a variable of {existing_value_type.type()} to a value of {value_type.type()}",
-                self.ip,
-            )
-        self._set_value(tokens[0], value_type)
+
+        # assigning existing member var from object - done
+        # assigning existing member var from anything else - done
+        # assigning object from any other type (including member vars) - same error
+        # assigning existing object from object (including member vars) - existing _set_value works
+
+        if "." in tokens[0]:  # existing is a member var
+            varname, member = vname.split(".")
+            var = self._get_value(varname)
+            if var.type() != Type.OBJECT:
+                super().error(
+                    ErrorType.TYPE_ERROR,
+                    f"Using dot operator on non-object type variable",
+                    self.ip,
+                )
+
+            obj_ref = var.value()
+            obj = self.objects[obj_ref]
+            obj[member] = value_type
+        else:
+            existing_value_type = self._get_value(tokens[0])  # for a variable
+            if existing_value_type.type() != value_type.type():
+                super().error(
+                    ErrorType.TYPE_ERROR,
+                    f"Trying to assign a variable of {existing_value_type.type()} to a value of {value_type.type()}",
+                    self.ip,
+                )
+            self._set_value(tokens[0], value_type)
         self._advance_to_next_statement()
 
     def _funccall(self, args):
@@ -178,7 +212,7 @@ class Interpreter(InterpreterBase):
 
         lambda_info = self.func_manager.func_cache[lambda_name]
 
-        lambda_info.closure = self.env_manager.get_captured_vars()
+        lambda_info.closure = self._get_captured_vars()
         # now variables of closure are stored in func_cache
 
         self._set_result(Value(Type.FUNC, lambda_name))
@@ -195,6 +229,25 @@ class Interpreter(InterpreterBase):
                 self.ip = line_num + 1
                 return
         super().error(ErrorType.SYNTAX_ERROR, "Missing endlambda", self.ip)
+
+    def _get_captured_vars(self):
+        captured_vars = {}
+        nested_envs = self.env_manager.get_curr_func_scope()
+        seen = set()
+        for block_scope in reversed(nested_envs):
+            for varname, value_obj in block_scope.items():
+                if varname in seen:
+                    continue
+                if value_obj.type() == Type.OBJECT:
+                    obj = self.objects[value_obj.value()]
+                    self.objects[self.next_obj_ref] = copy.deepcopy(obj)
+                    new_obj_obj = Value(Type.OBJECT, self.next_obj_ref)
+                    captured_vars[varname] = new_obj_obj
+                    self.next_obj_ref += 1
+                else:
+                    captured_vars[varname] = copy.deepcopy(value_obj)
+                seen.add(varname)
+        return captured_vars
 
     # create a new environment for a function call
     def _create_new_environment(self, funcname, args):
@@ -241,8 +294,15 @@ class Interpreter(InterpreterBase):
                 else:
                     tmp_mappings[formal_name] = arg
             else:
-                # be careful
-                tmp_mappings[formal_name] = copy.copy(arg)  # change for objects
+                if is_lambda and arg.type() == Type.OBJECT:
+                    obj = self.objects[arg.value()]
+                    self.objects[self.next_obj_ref] = copy.deepcopy(obj)
+                    new_obj_obj = Value(Type.OBJECT, self.next_obj_ref)
+                    tmp_mappings[formal_name] = new_obj_obj
+                    self.next_obj_ref += 1
+                else:
+                    # be careful
+                    tmp_mappings[formal_name] = copy.copy(arg)  # change for objects
 
         # create a new environment for the target function
         self.env_manager.push()
@@ -269,9 +329,14 @@ class Interpreter(InterpreterBase):
                     self.ip
                 )
                 if return_type != InterpreterBase.VOID_DEF:
-                    self._set_result(
-                        self.type_to_default[return_type]
-                    )  # typetodefault returns a value object
+                    if return_type == InterpreterBase.OBJECT_DEF:
+                        self._set_result(Value(Type.OBJECT, self.next_obj_ref))
+                        self.objects[self.next_obj_ref] = {}
+                        self.next_obj_ref += 1
+                    else:
+                        self._set_result(
+                            self.type_to_default[return_type]
+                        )  # typetodefault returns a value object
             self.ip = self.return_stack.pop()
 
     def _if(self, args):
@@ -416,9 +481,14 @@ class Interpreter(InterpreterBase):
             if args[0] not in self.type_to_default:
                 super().error(ErrorType.TYPE_ERROR, f"Invalid type {args[0]}", self.ip)
             # Create the variable with a copy of the default value for the type
-            self.env_manager.set(
-                var_name, copy.copy(self.type_to_default[args[0]])
-            )  # change for objects
+            if args[0] == InterpreterBase.OBJECT_DEF:
+                self.objects[self.next_obj_ref] = {}
+                self.env_manager.set(var_name, Value(Type.OBJECT, self.next_obj_ref))
+                self.next_obj_ref += 1
+            else:
+                self.env_manager.set(
+                    var_name, copy.copy(self.type_to_default[args[0]])
+                )  # change for objects
 
         self._advance_to_next_statement()
 
@@ -466,6 +536,7 @@ class Interpreter(InterpreterBase):
         self.type_to_default[InterpreterBase.BOOL_DEF] = Value(Type.BOOL, False)
         self.type_to_default[InterpreterBase.VOID_DEF] = Value(Type.VOID, None)
         self.type_to_default[InterpreterBase.FUNC_DEF] = Value(Type.FUNC, None)
+        self.type_to_default[InterpreterBase.OBJECT_DEF] = Value(Type.OBJECT, 0)
 
         # set up what types are compatible with what other types
         self.compatible_types = {}
@@ -476,6 +547,7 @@ class Interpreter(InterpreterBase):
         self.compatible_types[InterpreterBase.REFSTRING_DEF] = Type.STRING
         self.compatible_types[InterpreterBase.REFBOOL_DEF] = Type.BOOL
         self.compatible_types[InterpreterBase.FUNC_DEF] = Type.FUNC
+        self.compatible_types[InterpreterBase.OBJECT_DEF] = Type.OBJECT
         self.reference_types = {
             InterpreterBase.REFINT_DEF,
             Interpreter.REFSTRING_DEF,
@@ -488,6 +560,7 @@ class Interpreter(InterpreterBase):
         self.type_to_result[Type.STRING] = "s"
         self.type_to_result[Type.BOOL] = "b"
         self.type_to_result[Type.FUNC] = "f"
+        self.type_to_result[Type.OBJECT] = "o"
 
     # run a program, provided in an array of strings, one string per line of source code
     def _setup_operations(self):
@@ -559,6 +632,29 @@ class Interpreter(InterpreterBase):
         if token == InterpreterBase.TRUE_DEF or token == Interpreter.FALSE_DEF:
             return Value(Type.BOOL, token == InterpreterBase.TRUE_DEF)
 
+        if "." in token:
+            varname, member = token.split(".")
+            var = self._get_value(varname)
+            if var.type() != Type.OBJECT:
+                super().error(
+                    ErrorType.TYPE_ERROR,
+                    f"Using dot operator on non-object type variable",
+                    self.ip,
+                )
+
+            obj_ref = var.value()
+            obj = self.objects[obj_ref]  # pointer to an object
+
+            if member not in obj:
+                super().error(
+                    ErrorType.NAME_ERROR,
+                    f"Trying to access member that is not part of object",
+                    self.ip,
+                )
+            value_obj = obj[member]
+
+            return value_obj
+
         # function variables use this
         # function names themselves dont use this
         val = self.env_manager.get(token)
@@ -606,6 +702,12 @@ class Interpreter(InterpreterBase):
                     super().error(
                         ErrorType.TYPE_ERROR,
                         f"Mismatching types {v1.type()} and {v2.type()}",
+                        self.ip,
+                    )
+                if v1.type() == Type.FUNC or v1.type() == Type.OBJECT:
+                    super().error(
+                        ErrorType.TYPE_ERROR,
+                        f"Trying to perform operation on 2 objects or functions",
                         self.ip,
                     )
                 operations = self.binary_ops[v1.type()]
