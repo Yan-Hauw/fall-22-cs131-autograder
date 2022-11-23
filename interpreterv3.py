@@ -201,8 +201,11 @@ class Interpreter(InterpreterBase):
 
             # print(converted_args)
 
+            dot_method = "." in args[0]
+            this_var = args[0].split(".")[0] if dot_method else None
+
             self._create_new_environment(
-                called_func_object.value(), args[1:]
+                called_func_object.value(), args[1:], this_var, dot_method
             )  # Create new environment, copy args into new env
             self.ip = self._find_first_instruction(called_func_object.value())
 
@@ -250,7 +253,7 @@ class Interpreter(InterpreterBase):
         return captured_vars
 
     # create a new environment for a function call
-    def _create_new_environment(self, funcname, args):
+    def _create_new_environment(self, funcname, args, this_var=None, dot_method=False):
         formal_params = self.func_manager.get_function_info(funcname)
         if formal_params is None:
             super().error(
@@ -303,6 +306,10 @@ class Interpreter(InterpreterBase):
                 else:
                     # be careful
                     tmp_mappings[formal_name] = copy.copy(arg)  # change for objects
+
+        if dot_method and not is_lambda:
+            this_val_obj = self._get_value(this_var)
+            tmp_mappings["this"] = copy.copy(this_val_obj)
 
         # create a new environment for the target function
         self.env_manager.push()
